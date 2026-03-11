@@ -100,7 +100,23 @@
             <div class="flex flex-col md:flex-row gap-6 relative z-10">
                 @if ($logoUrl)
                     <div class="shrink-0 w-full md:w-64">
-                        <p class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Current Asset</p>
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider">Current Asset</p>
+                            <form action="{{ route('admin.settings.logo.destroy') }}" method="POST"
+                                onsubmit="return confirm('Remove this logo?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="text-[10px] font-bold text-red-600 uppercase tracking-wider hover:text-red-700 transition-colors flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg>
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
                         <div
                             class="bg-gray-200 border border-gray-400 rounded p-4 flex flex-col items-center justify-center min-h-[140px] shadow-inner relative">
                             <img src="{{ $logoUrl }}" alt="Hospital Logo"

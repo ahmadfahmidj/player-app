@@ -162,10 +162,10 @@
                             </div>
                         @else
                             @foreach ($videos as $video)
-                                <div
+                                <div data-playlist-item="{{ $video->id }}"
                                     class="group flex items-center gap-3 px-3 py-2 cursor-default {{ $state->current_video_id === $video->id ? 'bg-orange-50 border-l-4 border-orange-500' : 'hover:bg-blue-50 border-l-4 border-transparent' }}">
                                     <!-- Indicator -->
-                                    <div class="w-4 shrink-0 text-center text-xs font-bold font-mono text-gray-500">
+                                    <div class="w-4 shrink-0 text-center text-xs font-bold font-mono text-gray-500" data-playlist-indicator data-playlist-index="{{ $loop->iteration }}">
                                         @if ($state->current_video_id === $video->id)
                                             <span class="text-orange-500 animate-pulse">▶</span>
                                         @else
@@ -174,7 +174,7 @@
                                     </div>
 
                                     <div class="min-w-0 flex-grow">
-                                        <h3
+                                        <h3 data-playlist-title
                                             class="text-xs font-bold truncate {{ $state->current_video_id === $video->id ? 'text-gray-900' : 'text-gray-700' }}">
                                             {{ $video->title }}
                                         </h3>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessVideoRotation;
 use App\Models\Video;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,13 +44,17 @@ class VideoController extends Controller
 
         // Otherwise uploading a new video
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'video' => 'required|file|mimetypes:video/mp4|max:500000',
         ]);
 
         $file = $request->file('video');
         $filename = time().'_'.$file->getClientOriginalName();
         $path = $file->storeAs('videos', $filename, 'public');
+
+        $title = $request->filled('title')
+            ? $request->string('title')
+            : pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
         $duration = 0;
         if (function_exists('shell_exec')) {
@@ -63,7 +68,7 @@ class VideoController extends Controller
         $maxOrder = $activeChannel->videos()->max('channel_video.order') ?? 0;
 
         $video = Video::create([
-            'title' => $request->string('title'),
+            'title' => $title,
             'filename' => $filename,
             'path' => 'videos/'.$filename,
             'duration' => $duration,
@@ -71,7 +76,31 @@ class VideoController extends Controller
 
         $activeChannel->videos()->attach($video->id, ['order' => $maxOrder + 1]);
 
+        if ($request->boolean('rotate')) {
+            ProcessVideoRotation::dispatch($video);
+        }
+
         return redirect()->route('admin.videos')->with('success', 'Video uploaded and added to playlist.');
+    }
+
+    public function update(Request $request, Video $video): RedirectResponse|\Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'rotate' => 'nullable|boolean',
+        ]);
+
+        $video->update(['title' => $request->string('title')]);
+
+        if ($request->boolean('rotate')) {
+            ProcessVideoRotation::dispatch($video);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'title' => $video->title]);
+        }
+
+        return redirect()->route('admin.videos')->with('success', 'Video updated.');
     }
 
     public function destroy(Video $video): RedirectResponse

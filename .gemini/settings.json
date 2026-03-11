@@ -1,11 +1,19 @@
 {
-    "mcpServers": {
-        "laravel-boost": {
-            "command": "php",
-            "args": [
-                "artisan",
-                "boost:mcp"
-            ]
-        }
+  "mcpServers": {
+    "laravel-boost": {
+      "command": "php",
+      "args": [
+        "artisan",
+        "boost:mcp"
+      ]
+    },
+    "instruckt": {
+      "command": "php",
+      "args": [
+        "/var/www/player-app/artisan",
+        "mcp:start",
+        "instruckt"
+      ]
     }
+  }
 }

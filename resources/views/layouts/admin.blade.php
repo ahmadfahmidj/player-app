@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin') — Hospital TV</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="channel-slug" content="{{ $activeChannel->slug ?? 'default' }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/admin.js'])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -60,7 +62,7 @@
                     <form action="{{ route('admin.channels.switch') }}" method="POST" class="flex items-center">
                         @csrf
                         <select name="channel_id" onchange="this.form.submit()"
-                            class="text-xs bg-white border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-orange-500 shadow-sm font-semibold text-gray-700">
+                            class="text-xs bg-white border-2 border-orange-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-[0_2px_4px_rgba(255,136,0,0.1)] font-bold text-gray-900 cursor-pointer hover:border-orange-500 transition-all">
                             @foreach ($allChannels as $c)
                                 <option value="{{ $c->id }}"
                                     {{ $c->id == ($activeChannel->id ?? 0) ? 'selected' : '' }}>
@@ -72,7 +74,7 @@
                     <div class="flex gap-2">
                         <button type="button"
                             onclick="document.getElementById('createChannelModal').classList.remove('hidden')"
-                            class="text-xs px-2 py-1 bg-green-500 hover:bg-green-600 text-white font-semibold rounded shadow-sm flex items-center gap-1"><svg
+                            class="text-xs px-2 py-1 bg-gray-200 border border-gray-400 hover:bg-gray-300 text-green-600 font-bold rounded shadow-sm transition-all flex items-center gap-1 leading-none"><svg
                                 class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4"></path>
@@ -83,7 +85,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="text-xs px-2 py-1 bg-red-500 hover:bg-red-600 text-white font-semibold rounded shadow-sm flex items-center gap-1"><svg
+                                    class="text-xs px-2 py-1 bg-gray-200 border border-gray-400 hover:bg-gray-300 text-red-600 font-bold rounded shadow-sm transition-all flex items-center gap-1 leading-none"><svg
                                         class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
@@ -144,24 +146,34 @@
 
         <main class="relative z-10 flex-1 p-6 md:p-8 space-y-6">
             @if (session('success'))
-                <div
-                    class="animate-in fade-in slide-in-from-top-4 duration-500 mb-6 bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] text-emerald-400 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3">
-                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {{ session('success') }}
-                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: @json(session('success')),
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    });
+                </script>
             @endif
             @if (session('error'))
-                <div
-                    class="animate-in fade-in slide-in-from-top-4 duration-500 mb-6 bg-rose-500/10 border border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.15)] text-rose-400 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3">
-                    <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {{ session('error') }}
-                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: @json(session('error')),
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                        });
+                    });
+                </script>
             @endif
 
             @yield('content')

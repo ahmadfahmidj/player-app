@@ -101,6 +101,23 @@ class SettingsController extends Controller
         return redirect()->route('admin.settings')->with('success', 'Logo updated.');
     }
 
+    public function destroyLogo(): RedirectResponse
+    {
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+        $cid = $activeChannel->id;
+
+        $oldPath = Setting::get($cid, 'logo_path');
+        if ($oldPath) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        Setting::set($cid, 'logo_path', null);
+
+        LogoUpdated::dispatch(null, $activeChannel->slug);
+
+        return redirect()->route('admin.settings')->with('success', 'Logo removed.');
+    }
+
     public function updateEventOverlay(EventOverlayRequest $request): RedirectResponse
     {
         $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');

@@ -23,6 +23,19 @@ class Video extends Model
         return $this->belongsToMany(Channel::class)->withPivot('order');
     }
 
+    public function getFormattedDurationAttribute(): string
+    {
+        $hours = intdiv($this->duration, 3600);
+        $minutes = intdiv($this->duration % 3600, 60);
+        $seconds = $this->duration % 60;
+
+        if ($hours > 0) {
+            return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
+        }
+
+        return sprintf('%d:%02d', $minutes, $seconds);
+    }
+
     public function getUrlAttribute(): string
     {
         return asset('storage/'.ltrim($this->path, 'public/'));

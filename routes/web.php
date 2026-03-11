@@ -23,6 +23,7 @@ Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefi
     // Video management
     Route::get('/videos', [VideoController::class, 'index'])->name('videos');
     Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::patch('/videos/{video}', [VideoController::class, 'update'])->name('videos.update');
     Route::delete('/videos/{video}', [VideoController::class, 'destroy'])->name('videos.destroy');
     Route::patch('/videos/reorder', [VideoController::class, 'reorder'])->name('videos.reorder');
 
@@ -37,6 +38,7 @@ Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefi
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::post('/settings/running-text', [SettingsController::class, 'updateRunningText'])->name('settings.running-text');
     Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.logo');
+    Route::delete('/settings/logo', [SettingsController::class, 'destroyLogo'])->name('settings.logo.destroy');
     Route::post('/settings/event-overlay', [SettingsController::class, 'updateEventOverlay'])->name('settings.event-overlay');
     Route::post('/settings/screen-orientation', [SettingsController::class, 'updateScreenOrientation'])->name('settings.screen-orientation');
 });

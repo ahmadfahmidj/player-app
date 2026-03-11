@@ -166,8 +166,10 @@ function handleVideoEnded() {
 }
 
 function updateTickerBadgeClock() {
+    const clock = document.getElementById('ticker-clock');
     const badge = document.getElementById('ticker-badge');
-    if (!badge) return;
+    const target = clock || badge;
+    if (!target) return;
 
     const now = new Date();
     const formatted = now.toLocaleDateString('id-ID', {
@@ -175,14 +177,14 @@ function updateTickerBadgeClock() {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-    }) + ' ' + now.toLocaleTimeString('id-ID', {
+    }) + ' \u00A0|\u00A0 ' + now.toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
         hour12: false,
     });
 
-    badge.textContent = formatted;
+    target.textContent = formatted;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
