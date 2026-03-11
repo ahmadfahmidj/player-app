@@ -6,15 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $fillable = ['key', 'value'];
+    protected $fillable = ['channel_id', 'key', 'value'];
 
-    public static function get(string $key, mixed $default = null): mixed
+    protected function casts(): array
     {
-        return static::where('key', $key)->value('value') ?? $default;
+        return [
+            'channel_id' => 'integer',
+        ];
     }
 
-    public static function set(string $key, mixed $value): void
+    public static function get(int $channelId, string $key, mixed $default = null): mixed
     {
-        static::updateOrCreate(['key' => $key], ['value' => $value]);
+        return static::where('channel_id', $channelId)->where('key', $key)->value('value') ?? $default;
+    }
+
+    public static function set(int $channelId, string $key, mixed $value): void
+    {
+        static::updateOrCreate(['channel_id' => $channelId, 'key' => $key], ['value' => $value]);
     }
 }

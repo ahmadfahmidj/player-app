@@ -6,6 +6,14 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "instruckt": {
+            "command": "php",
+            "args": [
+                "/var/www/player-app/artisan",
+                "mcp:start",
+                "instruckt"
+            ]
         }
     }
 }

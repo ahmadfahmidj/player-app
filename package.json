@@ -25,6 +25,7 @@
     },
     "devDependencies": {
         "@vitejs/plugin-legacy": "^7.2.1",
+        "instruckt": "^0.4.25",
         "terser": "^5.46.0"
     }
 }

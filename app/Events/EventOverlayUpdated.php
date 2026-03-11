@@ -8,19 +8,27 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class VideoChanged implements ShouldBroadcastNow
+class EventOverlayUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * Create a new event instance.
+     */
     public function __construct(
-        public int $video_id,
-        public float $position,
-        public string $loop_mode,
+        public array $overlayData,
         public string $channelSlug,
     ) {}
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
     public function broadcastOn(): array
     {
-        return [new Channel('tv-broadcast.'.$this->channelSlug)];
+        return [
+            new Channel('tv-broadcast.'.$this->channelSlug),
+        ];
     }
 }

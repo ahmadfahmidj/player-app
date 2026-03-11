@@ -12,8 +12,13 @@ Route::get('/player', fn () => redirect()->route('player'));
 Route::get('/jadwal', [PlayerController::class, 'jadwal'])->name('player.jadwal');
 
 // Admin routes (auth required)
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [PlaybackController::class, 'index'])->name('dashboard');
+
+    // Channels
+    Route::post('/channels/switch', [\App\Http\Controllers\Admin\ChannelController::class, 'switch'])->name('channels.switch');
+    Route::post('/channels', [\App\Http\Controllers\Admin\ChannelController::class, 'store'])->name('channels.store');
+    Route::delete('/channels/{channel}', [\App\Http\Controllers\Admin\ChannelController::class, 'destroy'])->name('channels.destroy');
 
     // Video management
     Route::get('/videos', [VideoController::class, 'index'])->name('videos');
@@ -32,4 +37,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::post('/settings/running-text', [SettingsController::class, 'updateRunningText'])->name('settings.running-text');
     Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.logo');
+    Route::post('/settings/event-overlay', [SettingsController::class, 'updateEventOverlay'])->name('settings.event-overlay');
+    Route::post('/settings/screen-orientation', [SettingsController::class, 'updateScreenOrientation'])->name('settings.screen-orientation');
 });
+
+// Public sub-channels
+Route::get('/{slug}', [PlayerController::class, 'show'])->name('player.channel');

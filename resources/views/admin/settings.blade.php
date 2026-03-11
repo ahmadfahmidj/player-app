@@ -2,123 +2,232 @@
 @section('title', 'Settings')
 
 @section('content')
-    <div class="space-y-8 animate-in fade-in zoom-in-95 duration-500 max-w-4xl mx-auto">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="animate-in fade-in duration-300 w-full max-w-4xl mx-auto space-y-4">
+
+        <div
+            class="flex flex-col md:flex-row justify-between items-center bg-[#f0f0f0] border border-gray-400 px-4 py-3 rounded shadow shadow-gray-400/20">
             <div>
-                <h1
-                    class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 tracking-tight">
-                    System Settings</h1>
-                <p class="text-slate-400 mt-1">Configure broadcast overrides and appearance</p>
+                <h1 class="text-lg font-bold text-gray-800 flex items-center gap-2 shadow-sm">
+                    <svg class="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 22H22L12 2Z" />
+                    </svg>
+                    Preferences
+                </h1>
             </div>
         </div>
 
-        {{-- Running Text --}}
-        <div
-            class="rounded-2xl bg-slate-800/50 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6 md:p-8 relative overflow-hidden group">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-            </div>
-            <h2
-                class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
-                    </path>
+        {{-- Screen Orientation --}}
+        <div class="bg-gray-100 border border-gray-400 rounded shadow-md p-4">
+            <h2 class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-gray-300 pb-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 6h16v12H4z" />
                 </svg>
-                Running Text (Ticker)
+                Screen Orientation
             </h2>
 
-            <form action="{{ route('admin.settings.running-text') }}" method="POST" class="space-y-4 relative z-10">
+            <form action="{{ route('admin.settings.screen-orientation') }}" method="POST" class="space-y-3">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Message
-                        Content</label>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <input type="text" name="text" value="{{ $runningText }}" required
-                            class="flex-1 bg-slate-900/50 border border-slate-700 text-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors shadow-inner @error('text') border-rose-500/50 focus:border-rose-500 focus:ring-rose-500 @enderror"
-                            placeholder="Enter the message to scroll across the bottom of the screen...">
+                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Display Mode</label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <select name="screen_orientation" class="flex-1 bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner">
+                            <option value="landscape" {{ $screenOrientation === 'landscape' ? 'selected' : '' }}>Landscape</option>
+                            <option value="portrait" {{ $screenOrientation === 'portrait' ? 'selected' : '' }}>Portrait (Rotated 90°)</option>
+                        </select>
                         <button type="submit"
-                            class="shrink-0 relative overflow-hidden group/btn px-8 py-3 bg-blue-600 hover:bg-blue-500 border-none text-white rounded-xl font-bold text-sm transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.2)] hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] flex justify-center items-center gap-2">
+                            class="shrink-0 px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex justify-center items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Save
+                        </button>
+                    </div>
+                    @error('screen_orientation')
+                        <p class="mt-2 text-xs text-red-600 font-bold">{{ $message }}</p>
+                    @enderror
+                </div>
+            </form>
+        </div>
+
+        {{-- Running Text --}}
+        <div class="bg-gray-100 border border-gray-400 rounded shadow-md p-4">
+            <h2
+                class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-gray-300 pb-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                    </path>
+                </svg>
+                OSD Overlay (Ticker)
+            </h2>
+
+            <form action="{{ route('admin.settings.running-text') }}" method="POST" class="space-y-3">
+                @csrf
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Message
+                        String</label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" name="text" value="{{ $runningText }}" required
+                            class="flex-1 bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner @error('text') border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500 @enderror"
+                            placeholder="Enter the message to scroll across the OSD...">
+                        <button type="submit"
+                            class="shrink-0 px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex justify-center items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                                 </path>
                             </svg>
-                            Update Ticker
+                            Save
                         </button>
                     </div>
                     @error('text')
-                        <p class="mt-2 text-xs text-rose-400 font-medium">{{ $message }}</p>
+                        <p class="mt-2 text-xs text-red-600 font-bold">{{ $message }}</p>
                     @enderror
                 </div>
             </form>
         </div>
 
         {{-- Logo --}}
-        <div
-            class="rounded-2xl bg-slate-800/50 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6 md:p-8 relative overflow-hidden group">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-            </div>
+        <div class="bg-[#f0f0f0] border border-gray-400 rounded shadow-md p-4">
             <h2
-                class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-gray-300 pb-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0V20a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z">
                     </path>
                 </svg>
-                Hospital Logo
+                Display Icon (Logo)
             </h2>
 
-            <div class="flex flex-col md:flex-row gap-8 relative z-10">
+            <div class="flex flex-col md:flex-row gap-6 relative z-10">
                 @if ($logoUrl)
                     <div class="shrink-0 w-full md:w-64">
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Current Logo</p>
+                        <p class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Current Asset</p>
                         <div
-                            class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-6 flex flex-col items-center justify-center min-h-[160px] relative group/logo">
-                            <div
-                                class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjpyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjxwYXRoIGQ9Ik0wIDBMOCA4Wk04IDBMMCA4WiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-20 rounded-2xl">
-                            </div>
+                            class="bg-gray-200 border border-gray-400 rounded p-4 flex flex-col items-center justify-center min-h-[140px] shadow-inner relative">
                             <img src="{{ $logoUrl }}" alt="Hospital Logo"
-                                class="max-h-24 max-w-full object-contain relative z-10 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover/logo:scale-110">
+                                class="max-h-20 max-w-full object-contain filter drop-shadow">
                         </div>
                     </div>
                 @endif
 
                 <form action="{{ route('admin.settings.logo') }}" method="POST" enctype="multipart/form-data"
-                    class="flex-grow space-y-4">
+                    class="flex-grow space-y-3 flex flex-col justify-end">
                     @csrf
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Upload New
-                            Logo</label>
-                        <div class="relative group/file mb-4">
-                            <input type="file" name="logo" accept=".png,.svg,.jpg,.jpeg" required
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Upload
+                            Asset</label>
+                        <div class="relative w-full">
+                            <input type="file" name="logo" accept=".png,.svg,.jpg,.jpeg" required id="logo-input"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                             <div
-                                class="bg-slate-900/50 border-2 border-dashed border-slate-700 group-hover/file:border-indigo-500/50 rounded-xl px-4 py-8 text-center transition-colors">
-                                <svg class="w-8 h-8 mx-auto text-slate-500 mb-2 group-hover/file:text-indigo-400 transition-colors"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                class="w-full text-xs px-3 py-6 border border-dashed border-gray-400 shadow-sm rounded bg-white text-gray-600 text-center flex flex-col items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+                                <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                                 </svg>
-                                <span class="text-sm font-medium text-slate-300 block">Click or drag image file here</span>
-                                <span class="text-xs text-slate-500 font-mono mt-1 block">Supports PNG, SVG, JPG</span>
+                                <span id="logo-label-text" class="font-bold">Select image file...</span>
+                                <span class="text-[10px] text-gray-500 font-mono">PNG, SVG, JPG</span>
                             </div>
                         </div>
                         @error('logo')
-                            <p class="mt-2 text-xs text-rose-400 font-medium">{{ $message }}</p>
+                            <p class="mt-2 text-xs text-red-600 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <button type="submit"
-                        class="w-full relative overflow-hidden group/btn px-6 py-3 bg-indigo-600 hover:bg-indigo-500 border-none text-white rounded-xl font-bold text-sm transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.2)] hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] flex justify-center items-center gap-2">
+                        class="w-full relative overflow-hidden px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex justify-center items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                         </svg>
-                        Upload and Apply
+                        Apply Asset
                     </button>
                 </form>
             </div>
         </div>
+        {{-- Event Schedule Overlay --}}
+        <div class="bg-[#f0f0f0] border border-gray-400 rounded shadow-md p-4 mb-4">
+            <h2
+                class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-4 flex items-center justify-between border-b border-gray-300 pb-2">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/>
+                    </svg>
+                    Event Schedule Overlay
+                </span>
+            </h2>
+
+            <form action="{{ route('admin.settings.event-overlay') }}" method="POST" class="space-y-4">
+                @csrf
+                
+                {{-- Toggle Show/Hide --}}
+                <div class="flex items-center gap-3 bg-white p-3 rounded border border-gray-300 shadow-sm">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="overlay_show" class="sr-only peer" {{ $overlayShow == '1' ? 'checked' : '' }}>
+                        <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <span class="ml-3 text-sm font-bold text-gray-700">Display Overlay on TV</span>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Location --}}
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Building / Location</label>
+                        <input type="text" name="overlay_location" value="{{ $overlayLocation }}"
+                            class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner"
+                            placeholder="e.g. AULA SOEDIRMAN">
+                    </div>
+
+                    {{-- Subtitle --}}
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Subtitle</label>
+                        <input type="text" name="overlay_subtitle" value="{{ $overlaySubtitle }}"
+                            class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner"
+                            placeholder="e.g. ACARA BERIKUTNYA">
+                    </div>
+                </div>
+
+                {{-- Event Title --}}
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Main Event Title</label>
+                    <input type="text" name="overlay_title" value="{{ $overlayTitle }}"
+                        class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner font-bold"
+                        placeholder="e.g. SEMINAR KESELAMATAN PASIEN">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Time --}}
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Time Range</label>
+                        <input type="text" name="overlay_time" value="{{ $overlayTime }}"
+                            class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner"
+                            placeholder="e.g. 08:00 - 12:00">
+                    </div>
+
+                    {{-- Organizer --}}
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Organizer / PIC</label>
+                        <textarea name="overlay_organizer" rows="2"
+                            class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner resize-none"
+                            placeholder="e.g. BIDANG DIKLAT RSUD... PIC: Dr. Budi...">{{ $overlayOrganizer }}</textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit"
+                        class="px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Save Overlay Details
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
+    <script>
+        document.getElementById('logo-input').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : "Select image file...";
+            document.getElementById('logo-label-text').innerText = fileName;
+        });
+    </script>
 @endsection

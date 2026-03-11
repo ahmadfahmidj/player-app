@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\VideoReorderRequest;
-use App\Http\Requests\Admin\VideoUploadRequest;
 use App\Models\Video;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -14,13 +13,40 @@ class VideoController extends Controller
 {
     public function index(): View
     {
-        $videos = Video::query()->orderBy('order')->get();
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+        $videos = $activeChannel ? $activeChannel->videos()->orderByPivot('order')->get() : collect();
+        $allVideos = Video::query()->orderBy('title')->get();
 
-        return view('admin.videos', compact('videos'));
+        return view('admin.videos', compact('videos', 'allVideos', 'activeChannel'));
     }
 
-    public function store(VideoUploadRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+
+        if (! $activeChannel) {
+            return redirect()->back()->withErrors(['channel' => 'No active channel found.']);
+        }
+
+        // Check if we are adding an existing video
+        if ($request->filled('existing_video_id')) {
+            $request->validate(['existing_video_id' => 'required|exists:videos,id']);
+            $video = Video::find($request->input('existing_video_id'));
+
+            $maxOrder = $activeChannel->videos()->max('channel_video.order') ?? 0;
+            if (! $activeChannel->videos()->where('video_id', $video->id)->exists()) {
+                $activeChannel->videos()->attach($video->id, ['order' => $maxOrder + 1]);
+            }
+
+            return redirect()->route('admin.videos')->with('success', 'Video added to playlist.');
+        }
+
+        // Otherwise uploading a new video
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'video' => 'required|file|mimetypes:video/mp4|max:500000',
+        ]);
+
         $file = $request->file('video');
         $filename = time().'_'.$file->getClientOriginalName();
         $path = $file->storeAs('videos', $filename, 'public');
@@ -34,31 +60,43 @@ class VideoController extends Controller
             }
         }
 
-        $maxOrder = Video::query()->max('order') ?? 0;
+        $maxOrder = $activeChannel->videos()->max('channel_video.order') ?? 0;
 
-        Video::create([
+        $video = Video::create([
             'title' => $request->string('title'),
             'filename' => $filename,
             'path' => 'videos/'.$filename,
             'duration' => $duration,
-            'order' => $maxOrder + 1,
         ]);
 
-        return redirect()->route('admin.videos')->with('success', 'Video uploaded successfully.');
+        $activeChannel->videos()->attach($video->id, ['order' => $maxOrder + 1]);
+
+        return redirect()->route('admin.videos')->with('success', 'Video uploaded and added to playlist.');
     }
 
     public function destroy(Video $video): RedirectResponse
     {
-        Storage::disk('public')->delete('videos/'.$video->filename);
-        $video->delete();
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
 
-        return redirect()->route('admin.videos')->with('success', 'Video deleted successfully.');
+        // Only detach from current channel
+        $activeChannel->videos()->detach($video->id);
+
+        // Optional: If you want to delete the file if no channels use it anymore
+        // if ($video->channels()->count() === 0) {
+        //     Storage::disk('public')->delete('videos/'.$video->filename);
+        //     $video->delete();
+        // }
+
+        return redirect()->route('admin.videos')->with('success', 'Video removed from playlist.');
     }
 
-    public function reorder(VideoReorderRequest $request): \Illuminate\Http\JsonResponse
+    public function reorder(Request $request): \Illuminate\Http\JsonResponse
     {
-        foreach ($request->input('order') as $position => $id) {
-            Video::where('id', $id)->update(['order' => $position + 1]);
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+        $orderData = $request->input('order'); // array of video IDs
+
+        foreach ($orderData as $position => $id) {
+            $activeChannel->videos()->updateExistingPivot($id, ['order' => $position + 1]);
         }
 
         return response()->json(['success' => true]);

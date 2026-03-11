@@ -18,15 +18,17 @@ class PlaybackController extends Controller
 {
     public function index(): View
     {
-        $videos = Video::query()->orderBy('order')->get();
-        $state = BroadcastState::current();
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+        $videos = $activeChannel ? $activeChannel->videos()->orderByPivot('order')->get() : collect();
+        $state = BroadcastState::current($activeChannel->id);
 
-        return view('admin.dashboard', compact('videos', 'state'));
+        return view('admin.dashboard', compact('videos', 'state', 'activeChannel'));
     }
 
     public function play(PlaybackRequest $request): JsonResponse
     {
-        $state = BroadcastState::current();
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+        $state = BroadcastState::current($activeChannel->id);
         $state->update([
             'is_playing' => true,
             'started_at' => now(),
@@ -37,6 +39,7 @@ class PlaybackController extends Controller
             (int) $state->current_video_id,
             (float) $state->current_position,
             microtime(true),
+            $activeChannel->slug
         );
 
         return response()->json(['success' => true]);
@@ -44,7 +47,8 @@ class PlaybackController extends Controller
 
     public function pause(PlaybackRequest $request): JsonResponse
     {
-        $state = BroadcastState::current();
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
+        $state = BroadcastState::current($activeChannel->id);
         $position = $state->calculateCurrentPosition();
 
         $state->update([
@@ -54,15 +58,16 @@ class PlaybackController extends Controller
             'updated_at' => now(),
         ]);
 
-        VideoPaused::dispatch($position, microtime(true));
+        VideoPaused::dispatch($position, microtime(true), $activeChannel->slug);
 
         return response()->json(['success' => true]);
     }
 
     public function seek(PlaybackRequest $request): JsonResponse
     {
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
         $position = (float) $request->input('position', 0);
-        $state = BroadcastState::current();
+        $state = BroadcastState::current($activeChannel->id);
 
         $state->update([
             'current_position' => $position,
@@ -70,16 +75,17 @@ class PlaybackController extends Controller
             'updated_at' => now(),
         ]);
 
-        VideoSeeked::dispatch($position, microtime(true));
+        VideoSeeked::dispatch($position, microtime(true), $activeChannel->slug);
 
         return response()->json(['success' => true]);
     }
 
     public function change(PlaybackRequest $request): JsonResponse
     {
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
         $videoId = (int) $request->input('video_id');
         $video = Video::findOrFail($videoId);
-        $state = BroadcastState::current();
+        $state = BroadcastState::current($activeChannel->id);
 
         $state->update([
             'current_video_id' => $video->id,
@@ -89,22 +95,23 @@ class PlaybackController extends Controller
             'updated_at' => now(),
         ]);
 
-        VideoChanged::dispatch($video->id, 0.0, $state->loop_mode);
+        VideoChanged::dispatch($video->id, 0.0, $state->loop_mode, $activeChannel->slug);
 
         return response()->json(['success' => true]);
     }
 
     public function loop(PlaybackRequest $request): JsonResponse
     {
+        $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');
         $loopMode = $request->input('loop_mode', 'none');
-        $state = BroadcastState::current();
+        $state = BroadcastState::current($activeChannel->id);
 
         $state->update([
             'loop_mode' => $loopMode,
             'updated_at' => now(),
         ]);
 
-        LoopModeChanged::dispatch($loopMode);
+        LoopModeChanged::dispatch($loopMode, $activeChannel->slug);
 
         return response()->json(['success' => true]);
     }

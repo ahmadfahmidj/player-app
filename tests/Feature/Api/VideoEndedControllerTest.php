@@ -6,7 +6,13 @@ use App\Models\Video;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
+    $this->channel = \App\Models\Channel::where('is_main', true)->first() ?? \App\Models\Channel::create([
+        'name' => 'Main Channel',
+        'slug' => 'main',
+        'is_main' => true,
+    ]);
     BroadcastState::create([
+        'channel_id' => $this->channel->id,
         'current_video_id' => null,
         'current_position' => 0,
         'is_playing' => true,
@@ -17,15 +23,16 @@ beforeEach(function () {
 });
 
 test('video ended endpoint is publicly accessible', function () {
-    $this->postJson(route('api.player.video-ended'))->assertOk();
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))->assertOk();
 });
 
 test('none mode stops playback', function () {
     $video = Video::factory()->create();
-    $state = BroadcastState::current();
+    $this->channel->videos()->attach($video->id, ['order' => 1]);
+    $state = BroadcastState::current($this->channel->id);
     $state->update(['current_video_id' => $video->id]);
 
-    $this->postJson(route('api.player.video-ended'))
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))
         ->assertJson(['action' => 'stop']);
 
     $state->refresh();
@@ -35,10 +42,11 @@ test('none mode stops playback', function () {
 
 test('single mode repeats current video', function () {
     $video = Video::factory()->create();
-    $state = BroadcastState::current();
+    $this->channel->videos()->attach($video->id, ['order' => 1]);
+    $state = BroadcastState::current($this->channel->id);
     $state->update(['current_video_id' => $video->id, 'loop_mode' => 'single']);
 
-    $this->postJson(route('api.player.video-ended'))
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))
         ->assertJson(['action' => 'repeat']);
 
     $state->refresh();
@@ -49,13 +57,15 @@ test('single mode repeats current video', function () {
 test('playlist mode advances to next video', function () {
     Event::fake([VideoChanged::class]);
 
-    $video1 = Video::factory()->create(['order' => 1]);
-    $video2 = Video::factory()->create(['order' => 2]);
+    $video1 = Video::factory()->create();
+    $video2 = Video::factory()->create();
+    $this->channel->videos()->attach($video1->id, ['order' => 1]);
+    $this->channel->videos()->attach($video2->id, ['order' => 2]);
 
-    $state = BroadcastState::current();
+    $state = BroadcastState::current($this->channel->id);
     $state->update(['current_video_id' => $video1->id, 'loop_mode' => 'playlist']);
 
-    $this->postJson(route('api.player.video-ended'))
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))
         ->assertJson(['action' => 'next', 'video_id' => $video2->id]);
 
     $state->refresh();
@@ -71,13 +81,15 @@ test('playlist mode advances to next video', function () {
 test('playlist mode wraps around to first video after last', function () {
     Event::fake([VideoChanged::class]);
 
-    $video1 = Video::factory()->create(['order' => 1]);
-    $video2 = Video::factory()->create(['order' => 2]);
+    $video1 = Video::factory()->create();
+    $video2 = Video::factory()->create();
+    $this->channel->videos()->attach($video1->id, ['order' => 1]);
+    $this->channel->videos()->attach($video2->id, ['order' => 2]);
 
-    $state = BroadcastState::current();
+    $state = BroadcastState::current($this->channel->id);
     $state->update(['current_video_id' => $video2->id, 'loop_mode' => 'playlist']);
 
-    $this->postJson(route('api.player.video-ended'))
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))
         ->assertJson(['action' => 'next', 'video_id' => $video1->id]);
 
     $state->refresh();
@@ -87,20 +99,21 @@ test('playlist mode wraps around to first video after last', function () {
 test('playlist mode with single video replays it', function () {
     Event::fake([VideoChanged::class]);
 
-    $video = Video::factory()->create(['order' => 1]);
+    $video = Video::factory()->create();
+    $this->channel->videos()->attach($video->id, ['order' => 1]);
 
-    $state = BroadcastState::current();
+    $state = BroadcastState::current($this->channel->id);
     $state->update(['current_video_id' => $video->id, 'loop_mode' => 'playlist']);
 
-    $this->postJson(route('api.player.video-ended'))
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))
         ->assertJson(['action' => 'next', 'video_id' => $video->id]);
 });
 
 test('playlist mode with no videos stops playback', function () {
-    $state = BroadcastState::current();
+    $state = BroadcastState::current($this->channel->id);
     $state->update(['loop_mode' => 'playlist']);
 
-    $this->postJson(route('api.player.video-ended'))
+    $this->postJson(route('api.player.video-ended', ['channel' => 'main']))
         ->assertJson(['action' => 'stop']);
 
     $state->refresh();

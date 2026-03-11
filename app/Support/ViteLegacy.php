@@ -25,7 +25,7 @@ class ViteLegacy
         // Polyfills must load first
         if (isset($manifest['vite/legacy-polyfills-legacy'])) {
             $polyfillFile = $manifest['vite/legacy-polyfills-legacy']['file'];
-            $html .= '<script nomodule src="/build/' . $polyfillFile . '"></script>' . "\n";
+            $html .= '<script nomodule src="/build/'.$polyfillFile.'"></script>'."\n";
         }
 
         foreach ($entrypoints as $entry) {
@@ -40,11 +40,11 @@ class ViteLegacy
             // Load imports first
             foreach ($legacyEntry['imports'] ?? [] as $import) {
                 if (isset($manifest[$import])) {
-                    $html .= '<script nomodule src="/build/' . $manifest[$import]['file'] . '"></script>' . "\n";
+                    $html .= '<script nomodule src="/build/'.$manifest[$import]['file'].'"></script>'."\n";
                 }
             }
 
-            $html .= '<script nomodule src="/build/' . $legacyEntry['file'] . '"></script>' . "\n";
+            $html .= '<script nomodule src="/build/'.$legacyEntry['file'].'"></script>'."\n";
         }
 
         return new HtmlString($html);
@@ -57,6 +57,6 @@ class ViteLegacy
         $ext = pathinfo($entry, PATHINFO_EXTENSION);
         $base = substr($entry, 0, -(strlen($ext) + 1));
 
-        return $base . '-legacy.' . $ext;
+        return $base.'-legacy.'.$ext;
     }
 }

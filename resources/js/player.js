@@ -20,10 +20,11 @@ let player = null;
 let currentVideoId = null;
 let loopMode = 'none';
 let videoList = [];
+let channelSlug = window.PLAYER_INITIAL ? window.PLAYER_INITIAL.channelSlug : 'main';
 
 async function initPlayer() {
     // Fetch state from server
-    const stateRes = await fetch('/api/player/state');
+    const stateRes = await fetch(`/api/player/state?channel=${channelSlug}`);
     const state = await stateRes.json();
 
     loopMode = state.loop_mode || 'none';
@@ -49,6 +50,10 @@ async function initPlayer() {
         logo.style.display = '';
     }
 
+    if (state.overlay) {
+        updateOverlay(state.overlay);
+    }
+    
     if (state.video_url) {
         player.src({ type: 'video/mp4', src: state.video_url });
         player.one('loadedmetadata', () => {
@@ -63,7 +68,7 @@ async function initPlayer() {
     player.on('ended', () => handleVideoEnded());
 
     // Subscribe to broadcast channel
-    window.Echo.channel('tv-broadcast')
+    window.Echo.channel(`tv-broadcast.${channelSlug}`)
         .listen('VideoPlayed', (e) => {
             const drift = (Date.now() / 1000) - e.timestamp;
             player.currentTime(e.position + drift);
@@ -101,8 +106,28 @@ async function initPlayer() {
             const logo = document.getElementById('logo');
             logo.src = e.logo_url;
             logo.style.display = '';
+        })
+        .listen('EventOverlayUpdated', (e) => {
+            updateOverlay(e.overlayData);
         });
 }
+
+function updateOverlay(data) {
+    const overlay = document.getElementById('event-overlay');
+    if (!overlay) return;
+
+    if (data.show) {
+        overlay.style.display = 'block';
+        document.getElementById('overlay-location').textContent = data.location;
+        document.getElementById('overlay-subtitle').textContent = data.subtitle;
+        document.getElementById('overlay-title').textContent = data.title;
+        document.getElementById('overlay-time').textContent = data.time;
+        document.getElementById('overlay-organizer').textContent = data.organizer;
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
 
 function attemptPlay(playerInstance) {
     const promise = playerInstance.play();
@@ -115,7 +140,7 @@ function attemptPlay(playerInstance) {
 }
 
 function handleVideoEnded() {
-    fetch('/api/player/video-ended', {
+    fetch(`/api/player/video-ended?channel=${channelSlug}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -140,4 +165,28 @@ function handleVideoEnded() {
         });
 }
 
-document.addEventListener('DOMContentLoaded', initPlayer);
+function updateTickerBadgeClock() {
+    const badge = document.getElementById('ticker-badge');
+    if (!badge) return;
+
+    const now = new Date();
+    const formatted = now.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    }) + ' ' + now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    });
+
+    badge.textContent = formatted;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initPlayer();
+    updateTickerBadgeClock();
+    setInterval(updateTickerBadgeClock, 1000);
+});

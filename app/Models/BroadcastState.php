@@ -11,6 +11,7 @@ class BroadcastState extends Model
     protected $table = 'broadcast_state';
 
     protected $fillable = [
+        'channel_id',
         'current_video_id',
         'current_position',
         'is_playing',
@@ -22,6 +23,7 @@ class BroadcastState extends Model
     protected function casts(): array
     {
         return [
+            'channel_id' => 'integer',
             'current_position' => 'float',
             'is_playing' => 'boolean',
             'started_at' => 'datetime',
@@ -29,9 +31,14 @@ class BroadcastState extends Model
         ];
     }
 
-    public static function current(): static
+    public static function current(int $channelId): static
     {
-        return static::firstOrCreate([]);
+        return static::firstOrCreate(['channel_id' => $channelId]);
+    }
+
+    public function channel(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Channel::class);
     }
 
     public function video(): \Illuminate\Database\Eloquent\Relations\BelongsTo

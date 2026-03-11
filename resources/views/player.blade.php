@@ -3,11 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimum-scale=1.0">
     <title>Hospital TV</title>
     @vite(['resources/css/app.css', 'resources/js/player.js'])
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -23,23 +22,12 @@
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        #player-wrap {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-        }
-
         #video-container {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         #logo {
@@ -50,11 +38,13 @@
             max-width: 220px;
             object-fit: contain;
             z-index: 40;
-            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
             transition: opacity 0.5s ease-in-out;
         }
 
         #my-video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
         }
@@ -65,7 +55,13 @@
             background-color: transparent !important;
         }
 
-        /* Glassmorphic Ticker */
+        .vjs-tech {
+            object-fit: contain !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Ticker - TV-optimized (no backdrop-filter) */
         #ticker-glass {
             position: absolute;
             bottom: 0;
@@ -73,25 +69,11 @@
             width: 100%;
             padding: 1.25rem 0;
             z-index: 30;
-            background: linear-gradient(90deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+            background: rgba(2, 6, 23, 0.85);
+            border-top: 2px solid rgba(56, 189, 248, 0.6);
             overflow: hidden;
             display: flex;
             align-items: center;
-        }
-
-        /* Decorative glowing line top of ticker */
-        #ticker-glass::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), rgba(236, 72, 153, 0.8), transparent);
         }
 
         #ticker-badge {
@@ -102,7 +84,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 2rem;
+            padding: 0 2.5rem 0 2rem;
             background: linear-gradient(135deg, #0ea5e9, #3b82f6);
             color: white;
             font-weight: 800;
@@ -110,9 +92,6 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
             z-index: 35;
-            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
             min-width: 180px;
         }
 
@@ -131,7 +110,6 @@
             font-weight: 600;
             color: #f8fafc;
             letter-spacing: 0.05em;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
         @keyframes marquee {
@@ -143,12 +121,136 @@
                 transform: translateX(-100%);
             }
         }
+
+        /* Event Overlay - TV-optimized (no backdrop-filter) */
+        #event-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            z-index: 25;
+            background: rgba(2, 6, 23, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            padding: 3rem 4rem;
+            width: 80%;
+            max-width: 1200px;
+            color: white;
+            text-align: center;
+            display: none;
+            box-sizing: border-box;
+        }
+
+        .overlay-location {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fce7f3;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .overlay-main-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .overlay-subtitle {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fbbf24;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .overlay-title {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        .overlay-details-grid {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .overlay-detail-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 48%; /* Compat sizing */
+        }
+
+        .overlay-icon {
+            color: #fbbf24;
+            width: 3rem;
+            height: 3rem;
+            flex-shrink: 0;
+            margin-right: 1.5rem;
+        }
+
+        .overlay-detail-content {
+            flex-grow: 1;
+        }
+
+        .overlay-detail-label {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .overlay-detail-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 
 <body>
-    <div id="player-wrap">
-        <div id="video-container">
+    <x-instruckt-toolbar />
+    @php
+        $rotStyle = '';
+        if ($channel->orientation == 90) {
+            $rotStyle = '-webkit-transform: rotate(90deg); transform: rotate(90deg); -webkit-transform-origin: center; transform-origin: center;';
+        } elseif ($channel->orientation == 180) {
+            $rotStyle = '-webkit-transform: rotate(180deg); transform: rotate(180deg); -webkit-transform-origin: center; transform-origin: center;';
+        } elseif ($channel->orientation == 270) {
+            $rotStyle = '-webkit-transform: rotate(-90deg); transform: rotate(-90deg); -webkit-transform-origin: center; transform-origin: center;';
+        }
+
+        $screenStyle = '';
+        if ($screenOrientation == 'portrait') {
+            // Hardcode purely in style for legacy TVs with CSS variables fallback
+            $screenStyle = 'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg); transform: rotate(90deg); overflow: hidden;';
+        } else {
+            // Full landscape explicitly natively using percentages to avoid vw/vh bugs on ancient WebViews
+            $screenStyle = 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden;';
+        }
+        
+        // Combine transforms safely if both exist
+        if ($screenOrientation == 'portrait' && $rotStyle != '') {
+             $screenStyle = 'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg) rotate(' . $channel->orientation . 'deg); transform: rotate(90deg) rotate(' . $channel->orientation . 'deg); overflow: hidden;';
+        } elseif ($screenOrientation != 'portrait' && $rotStyle != '') {
+             $screenStyle .= ' ' . $rotStyle;
+        }
+    @endphp
+
+    <div id="player-wrap" style="{{ $screenStyle }}">
+        <div id="video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
             @if ($logoUrl)
                 <img id="logo" src="{{ $logoUrl }}" alt="Logo">
             @else
@@ -160,8 +262,43 @@
             </video>
         </div>
 
+        {{-- Event Overlay --}}
+        <div id="event-overlay">
+            <h1 id="overlay-location" class="overlay-location">{{ $overlay['location'] }}</h1>
+
+            <div class="overlay-main-box">
+                <div id="overlay-subtitle" class="overlay-subtitle">{{ $overlay['subtitle'] }}</div>
+                <div id="overlay-title" class="overlay-title">{{ $overlay['title'] }}</div>
+
+                <div class="overlay-details-grid">
+                    <div class="overlay-detail-card">
+                        <svg class="overlay-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="overlay-detail-content">
+                            <div class="overlay-detail-label">Waktu</div>
+                            <div id="overlay-time" class="overlay-detail-value">{{ $overlay['time'] }}</div>
+                        </div>
+                    </div>
+
+                    <div class="overlay-detail-card">
+                        <svg class="overlay-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <div class="overlay-detail-content">
+                            <div class="overlay-detail-label">Penyelenggara</div>
+                            <div id="overlay-organizer" class="overlay-detail-value text-base whitespace-pre-line">
+                                {{ $overlay['organizer'] }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="ticker-glass">
-            <div id="ticker-badge">INFO TEKINI</div>
+            <div id="ticker-badge"></div>
             <div id="ticker-bar">
                 <span id="ticker-text">{{ $runningText }}</span>
             </div>
@@ -172,7 +309,27 @@
         window.PLAYER_INITIAL = {
             runningText: @json($runningText),
             logoUrl: @json($logoUrl),
+            overlay: @json($overlay),
+            channelSlug: @json($channel->slug ?? 'main')
         };
+        
+        // Bulletproof dynamic resizer to bypass old webview vw/vh engine bugs
+        function resizeLegacyWrapper() {
+            var wrap = document.getElementById('player-wrap');
+            var isPortrait = {{ $screenOrientation === 'portrait' ? 'true' : 'false' }};
+            if (isPortrait) {
+                wrap.style.width = window.innerHeight + 'px';
+                wrap.style.height = window.innerWidth + 'px';
+            } else {
+                wrap.style.width = window.innerWidth + 'px';
+                wrap.style.height = window.innerHeight + 'px';
+            }
+        }
+        window.addEventListener('resize', resizeLegacyWrapper);
+        window.addEventListener('orientationchange', resizeLegacyWrapper);
+        document.addEventListener('DOMContentLoaded', resizeLegacyWrapper);
+        // Execute immediately in case DOM is already parsed
+        resizeLegacyWrapper();
     </script>
     {{-- Legacy fallback for Smart TV browsers that don't support ES modules --}}
     {!! App\Support\ViteLegacy::scripts(['resources/js/player.js']) !!}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
@@ -27,6 +27,13 @@
 
                 <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                     {{ __('Documentation') }}
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="moon" class="dark:hidden cursor-pointer" x-data x-on:click="$flux.appearance = 'dark'">
+                    {{ __('Dark Mode') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="sun" class="hidden dark:flex cursor-pointer" x-data x-on:click="$flux.appearance = 'light'">
+                    {{ __('Light Mode') }}
                 </flux:sidebar.item>
             </flux:sidebar.nav>
 

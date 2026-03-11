@@ -2,99 +2,101 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="space-y-8 animate-in fade-in zoom-in-95 duration-500">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="animate-in fade-in duration-300 w-full max-w-6xl mx-auto space-y-4">
+
+        <div
+            class="flex flex-col md:flex-row justify-between items-center bg-[#f0f0f0] border border-gray-400 px-4 py-3 rounded shadow shadow-gray-400/20">
             <div>
-                <h1
-                    class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 tracking-tight">
-                    Playback Control</h1>
-                <p class="text-slate-400 mt-1">Manage what's playing on Hospital TV in real-time</p>
+                <h1 class="text-lg font-bold text-gray-800 flex items-center gap-2 shadow-sm">
+                    <svg class="w-5 h-5 text-orange-500 hover:scale-110 transition-transform" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path d="M12 2L2 22H22L12 2Z" />
+                    </svg>
+                    Remote Access / Playback Network
+                </h1>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
             {{-- Left Column: Status & Controls --}}
-            <div class="lg:col-span-7 space-y-6">
+            <div class="lg:col-span-7 space-y-4">
 
                 {{-- Current Status Board --}}
-                <div
-                    class="relative overflow-hidden rounded-2xl bg-slate-800/50 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6 group">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    </div>
-                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                <div class="bg-gray-100 border border-gray-400 p-4 shadow-md rounded">
+                    <h2
+                        class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-gray-300 pb-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
-                        Current Status
+                        Connection Status
                     </h2>
 
-                    <div class="flex items-center gap-5 bg-slate-900/50 rounded-xl p-4 border border-white/5 shadow-inner">
-                        <div class="relative flex h-4 w-4">
+                    <div class="flex items-center gap-4 bg-white rounded border border-gray-300 shadow-inner p-3">
+                        <div class="relative flex h-5 w-5">
                             <span id="status-ping"
-                                class="absolute inline-flex h-full w-full rounded-full opacity-75 {{ $state->is_playing ? 'animate-ping bg-emerald-400' : 'hidden' }}"></span>
+                                class="absolute inline-flex h-full w-full rounded-full opacity-75 {{ $state->is_playing ? 'animate-ping bg-green-400' : 'hidden' }}"></span>
                             <span id="status-indicator"
-                                class="relative inline-flex rounded-full h-4 w-4 {{ $state->is_playing ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]' : 'bg-slate-600' }}"></span>
+                                class="relative inline-flex rounded-full h-5 w-5 {{ $state->is_playing ? 'bg-green-500 border border-green-700 shadow-sm' : 'bg-gray-400 border border-gray-500 inset-shadow-sm' }}"></span>
                         </div>
-                        <div>
-                            <div class="flex items-baseline gap-3">
+                        <div class="flex-grow min-w-0">
+                            <div class="flex items-baseline gap-3 pb-1 mb-1 border-b border-gray-100">
                                 <span id="status-text"
-                                    class="text-lg font-bold {{ $state->is_playing ? 'text-emerald-400' : 'text-slate-400' }}">
-                                    {{ $state->is_playing ? 'Playing' : 'Paused' }}
+                                    class="text-sm font-bold {{ $state->is_playing ? 'text-green-600' : 'text-gray-500' }} uppercase tracking-wider">
+                                    {{ $state->is_playing ? '▶ Playing' : '■ Paused' }}
                                 </span>
-                                <span id="current-video-title" class="text-slate-200 font-medium truncate max-w-sm">
+                                <span id="current-video-title" class="text-gray-800 font-medium truncate text-sm">
                                     {{ $state->video?->title ?? 'No video selected' }}
                                 </span>
                             </div>
                             <div
-                                class="mt-1 flex items-center gap-2 text-xs text-slate-500 font-medium uppercase tracking-wider">
-                                Loop Mode: <span id="current-loop" class="text-indigo-400">{{ $state->loop_mode }}</span>
+                                class="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                                State: <span id="current-loop"
+                                    class="text-blue-600 bg-blue-50 border border-blue-200 px-1 rounded">{{ $state->loop_mode }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Playback Controls Board --}}
-                <div
-                    class="rounded-2xl bg-slate-800/50 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6">
-                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-5 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                <div class="bg-[#f0f0f0] border border-gray-400 shadow-md rounded flex flex-col items-center p-4">
+                    <h2
+                        class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-4 flex items-center gap-2 self-start w-full border-b border-gray-300 pb-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
                                 d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
                             </path>
                         </svg>
-                        Master Controls
+                        Control Interface
                     </h2>
 
-                    <div class="flex flex-wrap gap-4 mb-8">
+                    <!-- VLC style big buttons -->
+                    <div class="flex gap-2 w-full justify-center mb-6">
                         <button onclick="adminPlay()"
-                            class="relative overflow-hidden group px-8 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-500 text-emerald-400 rounded-xl font-bold text-sm transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center gap-2">
+                            class="px-8 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 text-gray-800 rounded shadow hover:shadow-md font-bold uppercase text-xs flex items-center gap-2 active:bg-gray-400 active:shadow-none transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
-                            </svg>
-                            Play
+                            </svg> Play/Resume
                         </button>
                         <button onclick="adminPause()"
-                            class="relative overflow-hidden group px-8 py-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500 text-amber-500 rounded-xl font-bold text-sm transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_25px_rgba(245,158,11,0.3)] flex items-center gap-2">
+                            class="px-8 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 text-gray-800 rounded shadow hover:shadow-md font-bold uppercase text-xs flex items-center gap-2 active:bg-gray-400 active:shadow-none transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                            </svg>
-                            Pause
+                            </svg> Pause/Halt
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full bg-white p-3 border border-gray-300 rounded shadow-inner">
                         {{-- Seek --}}
-                        <div class="space-y-2">
-                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Seek to
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">Seek to
                                 (seconds)</label>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1">
                                 <input type="number" id="seek-input" min="0" step="1" value="0"
-                                    class="bg-slate-900/50 border border-slate-700 text-slate-200 rounded-lg px-4 py-2.5 text-sm w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-mono transition-colors">
+                                    class="bg-white border border-gray-400 text-gray-800 rounded px-2 py-1 text-sm w-full focus:outline-none focus:border-orange-500 shadow-inner">
                                 <button onclick="adminSeek()"
-                                    class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2">
+                                    class="px-4 py-1.5 bg-gray-200 hover:bg-gray-300 border border-gray-400 text-gray-800 rounded font-bold shadow-sm transition-all hover:-translate-y-px active:translate-y-px">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
@@ -104,17 +106,25 @@
                         </div>
 
                         {{-- Loop Mode --}}
-                        <div class="space-y-2">
-                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Loop
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">Loop
                                 Mode</label>
-                            <select id="loop-select" onchange="adminLoop(this.value)"
-                                class="bg-slate-900/50 border border-slate-700 text-slate-200 rounded-lg px-4 py-2.5 text-sm w-full focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-medium transition-colors appearance-none">
-                                <option value="none" {{ $state->loop_mode === 'none' ? 'selected' : '' }}>No Loop</option>
-                                <option value="single" {{ $state->loop_mode === 'single' ? 'selected' : '' }}>Loop Single
-                                    Video</option>
-                                <option value="playlist" {{ $state->loop_mode === 'playlist' ? 'selected' : '' }}>Loop
-                                    Entire Playlist</option>
-                            </select>
+                            <div class="relative">
+                                <select id="loop-select" onchange="adminLoop(this.value)"
+                                    class="w-full bg-white border border-gray-400 text-gray-800 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-orange-500 shadow-inner appearance-none cursor-pointer">
+                                    <option value="none" {{ $state->loop_mode === 'none' ? 'selected' : '' }}>No Loop
+                                    </option>
+                                    <option value="single" {{ $state->loop_mode === 'single' ? 'selected' : '' }}>Loop
+                                        Single Video</option>
+                                    <option value="playlist" {{ $state->loop_mode === 'playlist' ? 'selected' : '' }}>Loop
+                                        Entire Playlist</option>
+                                </select>
+                                <svg class="w-4 h-4 absolute right-2 top-[6px] pointer-events-none text-gray-500"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -124,65 +134,67 @@
             {{-- Right Column: Playlist --}}
             <div class="lg:col-span-5 relative">
                 <div
-                    class="sticky top-24 rounded-2xl bg-slate-800/50 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-0 flex flex-col max-h-[calc(100vh-8rem)]">
-                    <div class="p-5 border-b border-white/5 shrink-0 flex items-center justify-between">
-                        <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    class="sticky top-20 rounded bg-[#f0f0f0] border border-gray-400 shadow-md flex flex-col max-h-[calc(100vh-8rem)] overflow-hidden">
+                    <div
+                        class="p-3 bg-gray-200 border-b border-gray-400 shrink-0 flex items-center justify-between shadow-sm">
+                        <h2 class="text-xs font-bold text-gray-800 uppercase tracking-widest flex items-center gap-2">
+                            <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                             </svg>
-                            Up Next
+                            Network Queue
                         </h2>
                         <span
-                            class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-2.5 py-1 rounded-md">{{ $videos->count() }}
-                            Videos</span>
+                            class="bg-gray-100 border border-gray-300 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded shadow-inner">{{ $videos->count() }}
+                            media file(s)</span>
                     </div>
 
-                    <div class="overflow-y-auto p-3 space-y-2 flex-grow custom-scrollbar">
+                    <div
+                        class="overflow-y-auto p-1 bg-white space-y-px flex-grow custom-scrollbar border-b border-gray-300">
                         @if ($videos->isEmpty())
-                            <div class="flex flex-col items-center justify-center py-12 text-center">
-                                <div
-                                    class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-white/5">
-                                    <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <p class="text-slate-400 text-sm mb-4">No videos in the queue.</p>
+                            <div class="flex flex-col items-center justify-center p-8 text-center h-full">
+                                <svg class="w-8 h-8 text-gray-300 mb-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+                                </svg>
+                                <p class="text-gray-400 text-xs mb-3 italic">Playlist empty.</p>
                                 <a href="{{ route('admin.videos') }}"
-                                    class="px-5 py-2 block bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium shadow-lg shadow-blue-500/20 transition-all">Upload
-                                    Videos</a>
+                                    class="px-4 py-1.5 bg-gray-100 border border-gray-300 hover:border-gray-400 text-gray-600 rounded text-xs font-bold shadow-sm transition-all hover:bg-gray-200">Load
+                                    Media...</a>
                             </div>
                         @else
                             @foreach ($videos as $video)
                                 <div
-                                    class="group flex items-center gap-4 p-3 rounded-xl border transition-all duration-300 {{ $state->current_video_id === $video->id ? 'border-blue-500/50 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'border-transparent hover:border-white/10 hover:bg-white/5' }}">
-                                    <div
-                                        class="shrink-0 w-8 text-center text-xs font-black {{ $state->current_video_id === $video->id ? 'text-blue-400' : 'text-slate-600 group-hover:text-slate-400' }}">
+                                    class="group flex items-center gap-3 px-3 py-2 cursor-default {{ $state->current_video_id === $video->id ? 'bg-orange-50 border-l-4 border-orange-500' : 'hover:bg-blue-50 border-l-4 border-transparent' }}">
+                                    <!-- Indicator -->
+                                    <div class="w-4 shrink-0 text-center text-xs font-bold font-mono text-gray-500">
                                         @if ($state->current_video_id === $video->id)
-                                            <div class="animate-pulse">▶</div>
+                                            <span class="text-orange-500 animate-pulse">▶</span>
                                         @else
-                                            {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
+                                            {{ $loop->iteration }}
                                         @endif
                                     </div>
 
                                     <div class="min-w-0 flex-grow">
                                         <h3
-                                            class="text-sm font-bold truncate {{ $state->current_video_id === $video->id ? 'text-blue-300' : 'text-slate-200' }}">
-                                            {{ $video->title }}</h3>
-                                        <p class="text-xs text-slate-500 font-mono mt-0.5">
-                                            {{ gmdate('H:i:s', $video->duration) }}</p>
+                                            class="text-xs font-bold truncate {{ $state->current_video_id === $video->id ? 'text-gray-900' : 'text-gray-700' }}">
+                                            {{ $video->title }}
+                                        </h3>
+                                        <div class="flex items-center gap-2 mt-0.5">
+                                            <span
+                                                class="text-[10px] text-gray-500 font-mono">{{ gmdate('m:s', $video->duration) }}</span>
+                                        </div>
                                     </div>
 
                                     <button onclick="adminChange({{ $video->id }})"
-                                        class="shrink-0 opacity-0 group-hover:opacity-100 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-lg transition-all border border-slate-600 hover:border-slate-500 focus:opacity-100">
-                                        Play
+                                        class="shrink-0 opacity-0 group-hover:opacity-100 px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 text-[10px] font-bold uppercase rounded border border-gray-300 transition-all focus:opacity-100">
+                                        Cast
                                     </button>
                                 </div>
                             @endforeach
                         @endif
+                    </div>
+                    <!-- VLC mock bottom frame -->
+                    <div class="h-4 bg-gray-200 border-t border-gray-300 flex items-center px-2">
+                        <span class="text-[9px] text-gray-500 uppercase font-mono">Status: Ready</span>
                     </div>
                 </div>
             </div>
@@ -191,20 +203,22 @@
 
     <style>
         .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+            width: 12px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
+            background: #F0F0F0;
+            border-left: 1px solid #D1D5DB;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: #cbd5e1;
+            border: 2px solid #F0F0F0;
+            border-radius: 6px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: #94a3b8;
         }
     </style>
 
@@ -222,16 +236,17 @@
                     body: JSON.stringify(data)
                 });
 
-                // Add subtle click feedback
+                // VLC style flash
                 const body = document.querySelector('body');
                 const flash = document.createElement('div');
                 flash.className =
-                'fixed inset-0 bg-blue-500/5 pointer-events-none z-50 transition-opacity duration-300';
+                    'fixed left-1/2 top-10 -translate-x-1/2 bg-gray-900 text-white font-mono text-sm px-4 py-1 rounded shadow-xl pointer-events-none z-50 transition-opacity duration-300 opacity-90';
+                flash.innerHTML = '> Command sent';
                 body.appendChild(flash);
                 setTimeout(() => {
                     flash.style.opacity = '0';
                     setTimeout(() => flash.remove(), 300);
-                }, 50);
+                }, 500);
 
                 return res.json();
             } catch (e) {

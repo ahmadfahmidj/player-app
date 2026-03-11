@@ -10,9 +10,15 @@ use Illuminate\Http\JsonResponse;
 
 class VideoEndedController extends Controller
 {
-    public function __invoke(): JsonResponse
+    public function __invoke(\Illuminate\Http\Request $request): JsonResponse
     {
-        $state = BroadcastState::current();
+        $slug = $request->query('channel', 'main');
+        $channel = \App\Models\Channel::where('slug', $slug)->first() ?? \App\Models\Channel::where('is_main', true)->first();
+        if (! $channel) {
+            abort(404);
+        }
+
+        $state = BroadcastState::current($channel->id);
 
         if ($state->loop_mode === 'single') {
             $state->update([
@@ -26,7 +32,7 @@ class VideoEndedController extends Controller
         }
 
         if ($state->loop_mode === 'playlist') {
-            $nextVideo = $this->getNextVideo($state->current_video_id);
+            $nextVideo = $this->getNextVideo($channel, $state->current_video_id);
 
             if ($nextVideo) {
                 $state->update([
@@ -37,7 +43,7 @@ class VideoEndedController extends Controller
                     'updated_at' => now(),
                 ]);
 
-                VideoChanged::dispatch($nextVideo->id, 0.0, $state->loop_mode);
+                VideoChanged::dispatch($nextVideo->id, 0.0, $state->loop_mode, $channel->slug);
 
                 return response()->json(['action' => 'next', 'video_id' => $nextVideo->id]);
             }
@@ -54,9 +60,9 @@ class VideoEndedController extends Controller
         return response()->json(['action' => 'stop']);
     }
 
-    private function getNextVideo(?int $currentVideoId): ?Video
+    private function getNextVideo(\App\Models\Channel $channel, ?int $currentVideoId): ?Video
     {
-        $videos = Video::query()->orderBy('order')->get();
+        $videos = $channel->videos()->orderByPivot('order')->get();
 
         if ($videos->isEmpty()) {
             return null;

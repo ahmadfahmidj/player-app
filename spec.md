@@ -40,13 +40,13 @@ A Laravel 12 web application that allows a hospital admin to control video playb
 
 ### 1. Authentication (Admin Only)
 
-- Laravel Fortify for login/logout (headless — provides routes and logic only)
-- Custom login view at `resources/views/auth/login.blade.php` (Blade + Tailwind)
-- Fortify handles: `POST /login`, `POST /logout`, CSRF protection, session management
-- Only authenticated admins can access the admin panel (protected via `auth` middleware)
-- Single admin user (seeded via DatabaseSeeder)
-- Player page is **fully public** — no auth required
-- No registration, password reset, or email verification needed — disable unused Fortify features in `config/fortify.php`
+- [x] Laravel Fortify for login/logout (headless — provides routes and logic only)
+- [x] Custom login view at `resources/views/auth/login.blade.php` (Blade + Tailwind)
+- [x] Fortify handles: `POST /login`, `POST /logout`, CSRF protection, session management
+- [x] Only authenticated admins can access the admin panel (protected via `auth` middleware)
+- [x] Single admin user (seeded via DatabaseSeeder)
+- [x] Player page is **fully public** — no auth required
+- [x] No registration, password reset, or email verification needed — disable unused Fortify features in `config/fortify.php`
 
 ---
 
@@ -54,18 +54,18 @@ A Laravel 12 web application that allows a hospital admin to control video playb
 
 #### 2a. Video Management
 
-- Upload MP4 video files to `storage/app/public/videos/`
-- Store video metadata in the `videos` database table:
-    - `id`
-    - `title` — display name
-    - `filename` — stored filename
-    - `path` — full storage path
-    - `duration` — video duration in seconds (extracted via FFprobe or set manually)
-    - `order` — playlist order (integer)
-    - `created_at`, `updated_at`
-- List all uploaded videos
-- Delete a video (removes file + DB record)
-- Reorder videos (drag-and-drop or up/down buttons) for playlist sequence
+- [x] Upload MP4 video files to `storage/app/public/videos/`
+- [x] Store video metadata in the `videos` database table:
+    - [x] `id`
+    - [x] `title` — display name
+    - [x] `filename` — stored filename
+    - [x] `path` — full storage path
+    - [x] `duration` — video duration in seconds (extracted via FFprobe or set manually)
+    - [x] `order` — playlist order (integer)
+    - [x] `created_at`, `updated_at`
+- [x] List all uploaded videos
+- [x] Delete a video (removes file + DB record)
+- [x] Reorder videos (drag-and-drop or up/down buttons) for playlist sequence
 
 > **Video Format Requirement:** Only MP4 (H.264 video codec + AAC audio codec) is accepted. Other formats must be converted with FFmpeg before upload. Validate MIME type on upload (`video/mp4`).
 
@@ -85,26 +85,26 @@ Controls that the admin can operate, all of which are broadcast in real-time to 
 
 #### 2c. Running Text Management
 
-- Input field for the running text (ticker) message
-- "Update" button to push new running text to all TVs immediately via broadcast
-- Text is persisted in a `settings` table so it survives server restarts
+- [x] Input field for the running text (ticker) message
+- [x] "Update" button to push new running text to all TVs immediately via broadcast
+- [x] Text is persisted in a `settings` table so it survives server restarts
 
 #### 2d. Logo Management
 
-- Upload hospital logo image (PNG or SVG recommended)
-- Stored at `storage/app/public/logo/`
-- Displayed on top-left corner of every TV player page
-- Persisted in `settings` table
-- Updating logo broadcasts the new logo URL to all TVs immediately
+- [x] Upload hospital logo image (PNG or SVG recommended)
+- [x] Stored at `storage/app/public/logo/`
+- [x] Displayed on top-left corner of every TV player page
+- [x] Persisted in `settings` table
+- [x] Updating logo broadcasts the new logo URL to all TVs immediately
 
 ---
 
 ### 3. Player Page (TV Display)
 
-- Route: `GET /player`
-- No authentication required — fully public
-- Designed to be opened on Smart TVs, PC browsers, and older devices
-- Fullscreen layout (no scrollbar, no browser UI expected)
+- [x] Route: `GET /player`
+- [x] No authentication required — fully public
+- [x] Designed to be opened on Smart TVs, PC browsers, and older devices
+- [x] Fullscreen layout (no scrollbar, no browser UI expected)
 
 #### Layout
 
@@ -124,11 +124,11 @@ Controls that the admin can operate, all of which are broadcast in real-time to 
 
 #### Behavior
 
-- On page load, the player fetches **current broadcast state** from the server via HTTP (`GET /api/player/state`) before connecting to WebSocket
-- State includes: current video URL, current playback position (seconds), is_playing, loop_mode, running_text, logo_url
-- Player seeks to the current position and respects `is_playing` immediately
-- Player then subscribes to the Reverb channel and listens for events
-- All controls from admin are reflected immediately on all connected TVs
+- [x] On page load, the player fetches **current broadcast state** from the server via HTTP (`GET /api/player/state`) before connecting to WebSocket
+- [x] State includes: current video URL, current playback position (seconds), is_playing, loop_mode, running_text, logo_url
+- [x] Player seeks to the current position and respects `is_playing` immediately
+- [x] Player then subscribes to the Reverb channel and listens for events
+- [x] All controls from admin are reflected immediately on all connected TVs
 
 #### Loop Behavior
 
@@ -140,11 +140,11 @@ Controls that the admin can operate, all of which are broadcast in real-time to 
 
 #### Compatibility
 
-- Use **Video.js** for maximum browser compatibility
-- Use standard HTML5 `<video>` fallback
-- Avoid CSS Grid — use Flexbox only
-- JS transpiled via Vite for older browser support
-- Laravel Echo falls back to **long polling** automatically if WebSocket is not supported by the browser
+- [x] Use **Video.js** for maximum browser compatibility
+- [x] Use standard HTML5 `<video>` fallback
+- [x] Avoid CSS Grid — use Flexbox only
+- [x] JS transpiled via Vite for older browser support
+- [x] Laravel Echo falls back to **long polling** automatically if WebSocket is not supported by the browser
 
 ---
 
@@ -152,8 +152,8 @@ Controls that the admin can operate, all of which are broadcast in real-time to 
 
 ### Channel
 
-- Channel type: **Public channel** (no auth needed for player page)
-- Channel name: `tv-broadcast`
+- [x] Channel type: **Public channel** (no auth needed for player page)
+- [x] Channel name: `tv-broadcast`
 
 ### Events Broadcast
 

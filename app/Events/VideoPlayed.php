@@ -16,10 +16,11 @@ class VideoPlayed implements ShouldBroadcastNow
         public int $video_id,
         public float $position,
         public float $timestamp,
+        public string $channelSlug,
     ) {}
 
     public function broadcastOn(): array
     {
-        return [new Channel('tv-broadcast')];
+        return [new Channel('tv-broadcast.'.$this->channelSlug)];
     }
 }

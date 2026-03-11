@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e20eea1203e10a983dbfc87451d849dd",
+    "content-hash": "7171136cc7e94da4716ab4a89b30d2c2",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -8079,6 +8079,58 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.1.1"
             },
             "time": "2025-03-19T14:43:43+00:00"
+        },
+        {
+            "name": "joshcirre/instruckt-laravel",
+            "version": "v0.4.25",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joshcirre/instruckt-laravel.git",
+                "reference": "41209fecd8e158eaba29e1f998bb37968843040e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joshcirre/instruckt-laravel/zipball/41209fecd8e158eaba29e1f998bb37968843040e",
+                "reference": "41209fecd8e158eaba29e1f998bb37968843040e",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^11.0|^12.0",
+                "laravel/mcp": "^0.1 || ^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Instruckt\\Laravel\\InstrucktServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Instruckt\\Laravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Visual feedback for AI coding agents — Laravel MCP package",
+            "keywords": [
+                "Agent",
+                "ai",
+                "feedback",
+                "instruckt",
+                "laravel",
+                "livewire",
+                "mcp"
+            ],
+            "support": {
+                "issues": "https://github.com/joshcirre/instruckt-laravel/issues",
+                "source": "https://github.com/joshcirre/instruckt-laravel/tree/v0.4.25"
+            },
+            "time": "2026-03-10T09:19:38+00:00"
         },
         {
             "name": "laravel/boost",

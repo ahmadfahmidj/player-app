@@ -170,7 +170,7 @@
         </div>
 
         <div id="ticker-glass">
-            <div id="ticker-badge">INFO TEKINI</div>
+            <div id="ticker-badge"></div>
             <div id="ticker-bar">
                 <span id="ticker-text">{{ $runningText }}</span>
             </div>
@@ -181,6 +181,7 @@
         window.PLAYER_INITIAL = {
             runningText: @json($runningText),
             logoUrl: @json($logoUrl),
+            channelSlug: @json($channel->slug ?? 'main')
         };
     </script>
     {{-- Legacy fallback for Smart TV browsers that don't support ES modules --}}

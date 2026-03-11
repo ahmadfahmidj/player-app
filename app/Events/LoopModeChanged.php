@@ -14,10 +14,11 @@ class LoopModeChanged implements ShouldBroadcastNow
 
     public function __construct(
         public string $loop_mode,
+        public string $channelSlug,
     ) {}
 
     public function broadcastOn(): array
     {
-        return [new Channel('tv-broadcast')];
+        return [new Channel('tv-broadcast.'.$this->channelSlug)];
     }
 }

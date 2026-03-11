@@ -16,17 +16,26 @@ class PlayerStateResource extends JsonResource
     public function toArray(Request $request): array
     {
         $video = $this->video;
-        $logoPath = Setting::get('logo_path');
+        $cid = $this->channel_id;
+        $logoPath = Setting::get($cid, 'logo_path');
 
         return [
             'current_video_id' => $this->current_video_id,
-            'video_url' => $video ? asset('storage/videos/' . $video->filename) : null,
+            'video_url' => $video ? asset('storage/'.$video->path) : null,
             'video_title' => $video?->title,
             'current_position' => $this->calculateCurrentPosition(),
             'is_playing' => $this->is_playing,
             'loop_mode' => $this->loop_mode,
-            'running_text' => Setting::get('running_text', 'Selamat datang di Rumah Sakit'),
-            'logo_url' => $logoPath ? asset('storage/' . $logoPath) : null,
+            'running_text' => Setting::get($cid, 'running_text', 'Selamat datang di Rumah Sakit'),
+            'logo_url' => $logoPath ? asset('storage/'.$logoPath) : null,
+            'overlay' => [
+                'show' => Setting::get($cid, 'overlay_show', '0') === '1',
+                'location' => Setting::get($cid, 'overlay_location', ''),
+                'subtitle' => Setting::get($cid, 'overlay_subtitle', ''),
+                'title' => Setting::get($cid, 'overlay_title', ''),
+                'time' => Setting::get($cid, 'overlay_time', ''),
+                'organizer' => Setting::get($cid, 'overlay_organizer', ''),
+            ],
         ];
     }
 }

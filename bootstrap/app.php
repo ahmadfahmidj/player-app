@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: [
-            'admin/videos',
+            'admin/videos*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -9,19 +9,54 @@ class PlayerController extends Controller
 {
     public function index(): View
     {
-        $runningText = Setting::get('running_text', 'Selamat datang di Rumah Sakit');
-        $logoPath = Setting::get('logo_path');
+        $channel = \App\Models\Channel::where('is_main', true)->firstOrFail();
+
+        return $this->renderPlayer($channel);
+    }
+
+    public function show(string $slug): \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+    {
+        $channel = \App\Models\Channel::where('slug', $slug)->first();
+        if (! $channel) {
+            return redirect()->route('player');
+        }
+
+        return $this->renderPlayer($channel);
+    }
+
+    private function renderPlayer(\App\Models\Channel $channel): View
+    {
+        $cid = $channel->id;
+        $runningText = Setting::get($cid, 'running_text', 'Selamat datang di Rumah Sakit');
+        $logoPath = Setting::get($cid, 'logo_path');
         $logoUrl = $logoPath ? asset('storage/'.$logoPath) : null;
 
-        return view('player', compact('runningText', 'logoUrl'));
+        $overlay = [
+            'show' => Setting::get($cid, 'overlay_show', '0') === '1',
+            'location' => Setting::get($cid, 'overlay_location', ''),
+            'subtitle' => Setting::get($cid, 'overlay_subtitle', ''),
+            'title' => Setting::get($cid, 'overlay_title', ''),
+            'time' => Setting::get($cid, 'overlay_time', ''),
+            'organizer' => Setting::get($cid, 'overlay_organizer', ''),
+        ];
+
+        $screenOrientation = Setting::get($cid, 'screen_orientation', 'landscape');
+
+        return view('player', compact('runningText', 'logoUrl', 'overlay', 'channel', 'screenOrientation'));
     }
 
     public function jadwal(): View
     {
-        $runningText = Setting::get('running_text', 'Selamat datang di Rumah Sakit');
-        $logoPath = Setting::get('logo_path');
-        $logoUrl = $logoPath ? asset('storage/'.$logoPath) : null;
+        // For jadwal, maybe we just use main channel or pass slug?
+        // the user didn't specify, we'll just use main channel
+        $channel = \App\Models\Channel::where('is_main', true)->firstOrFail();
+        $cid = $channel->id;
 
-        return view('player-jadwal', compact('runningText', 'logoUrl'));
+        $runningText = Setting::get($cid, 'running_text', 'Selamat datang di Rumah Sakit');
+        $logoPath = Setting::get($cid, 'logo_path');
+        $logoUrl = $logoPath ? asset('storage/'.$logoPath) : null;
+        $screenOrientation = Setting::get($cid, 'screen_orientation', 'landscape');
+
+        return view('player-jadwal', compact('runningText', 'logoUrl', 'channel', 'screenOrientation'));
     }
 }

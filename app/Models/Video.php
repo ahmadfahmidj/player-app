@@ -9,14 +9,18 @@ class Video extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'filename', 'path', 'duration', 'order'];
+    protected $fillable = ['title', 'filename', 'path', 'duration'];
 
     protected function casts(): array
     {
         return [
             'duration' => 'integer',
-            'order' => 'integer',
         ];
+    }
+
+    public function channels(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Channel::class)->withPivot('order');
     }
 
     public function getUrlAttribute(): string

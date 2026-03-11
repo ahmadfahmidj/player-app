@@ -34,79 +34,172 @@
     </style>
 </head>
 
-<body class="bg-slate-900 min-h-screen text-slate-200 antialiased relative selection:bg-blue-500/30">
-    <!-- Background glowing orbs -->
-    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-blue-600/20 blur-[120px]"></div>
-        <div class="absolute top-[20%] -right-[10%] w-[30%] h-[50%] rounded-full bg-indigo-600/10 blur-[100px]"></div>
-    </div>
+<body class="bg-gray-200 min-h-screen text-gray-800 font-sans antialiased relative selection:bg-orange-500/30">
+    <!-- No background orbs for VLC theme -->
 
-    <!-- Glassmorphic Navbar -->
-    <nav
-        class="relative z-20 sticky top-0 w-full border-b border-white/10 bg-slate-900/50 backdrop-blur-xl px-6 py-4 flex items-center justify-between shadow-2xl">
-        <div class="flex items-center gap-8">
-            <span
-                class="font-extrabold text-xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 tracking-tight flex items-center shadow-sm">
-                <svg class="w-6 h-6 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                    </path>
-                </svg>
-                Hospital TV
-            </span>
-            <div class="flex gap-1">
-                <a href="{{ route('admin.dashboard') }}"
-                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5' }}">Dashboard</a>
-                <a href="{{ route('admin.videos') }}"
-                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('admin.videos') ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5' }}">Videos</a>
-                <a href="{{ route('admin.settings') }}"
-                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('admin.settings') ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5' }}">Settings</a>
+    <!-- VLC-style Title & Menu Bar -->
+    <nav class="relative z-20 sticky top-0 w-full bg-[#f0f0f0] border-b border-gray-300 shadow-sm">
+        <!-- Title Bar -->
+        <x-instruckt-toolbar />
+        <div class="bg-gray-100 flex items-center justify-between px-4 py-2 border-b border-gray-300">
+            <div class="flex items-center gap-4">
+                <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500 border border-red-600"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400 border border-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500 border border-green-600"></div>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-semibold text-gray-800">
+                    <div class="w-4 h-4 text-orange-500 hidden md:block">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 22H22L12 2Z" />
+                        </svg>
+                    </div>
+                    Mainan TV Admin
+                </div>
+                <div class="flex items-center gap-4">
+                    <form action="{{ route('admin.channels.switch') }}" method="POST" class="flex items-center">
+                        @csrf
+                        <select name="channel_id" onchange="this.form.submit()"
+                            class="text-xs bg-white border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-orange-500 shadow-sm font-semibold text-gray-700">
+                            @foreach ($allChannels as $c)
+                                <option value="{{ $c->id }}"
+                                    {{ $c->id == ($activeChannel->id ?? 0) ? 'selected' : '' }}>
+                                    {{ $c->name }} {{ $c->is_main ? '(Main)' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                    <div class="flex gap-2">
+                        <button type="button"
+                            onclick="document.getElementById('createChannelModal').classList.remove('hidden')"
+                            class="text-xs px-2 py-1 bg-green-500 hover:bg-green-600 text-white font-semibold rounded shadow-sm flex items-center gap-1"><svg
+                                class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg> New</button>
+                        @if (isset($activeChannel) && !$activeChannel->is_main)
+                            <form action="{{ route('admin.channels.destroy', $activeChannel) }}" method="POST"
+                                onsubmit="return confirm('Delete this channel? This cannot be undone.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="text-xs px-2 py-1 bg-red-500 hover:bg-red-600 text-white font-semibold rounded shadow-sm flex items-center gap-1"><svg
+                                        class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg> Del</button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="flex items-center gap-5">
-            <a href="{{ route('player') }}" target="_blank"
-                class="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 bg-indigo-500/10 text-indigo-300 rounded-full border border-indigo-500/20 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all">
-                Open Player
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-            </a>
-            <div class="w-px h-6 bg-slate-700"></div>
-            <form method="POST" action="/logout" class="m-0">
-                @csrf
-                <button type="submit"
-                    class="text-sm font-medium text-red-400 hover:text-red-300 transition-colors flex items-center gap-2">
-                    Logout
-                </button>
-            </form>
+
+            <div class="flex flex-row items-center gap-4">
+                <a href="{{ isset($activeChannel) && !$activeChannel->is_main ? route('player.channel', $activeChannel->slug) : route('player') }}"
+                    target="_blank"
+                    class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1 bg-gray-200 text-gray-700 rounded border border-gray-400 hover:bg-gray-300 transition-all shadow-sm">
+                    Player Screen
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
+                <form method="POST" action="/logout" class="m-0">
+                    @csrf
+                    <button type="submit"
+                        class="text-xs font-medium text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 bg-gray-200 border border-gray-400 px-2 py-1 rounded shadow-sm hover:bg-white">
+                        Quit
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
 
-    <main class="relative z-10 p-6 md:p-8 max-w-7xl mx-auto space-y-6">
-        @if (session('success'))
-            <div
-                class="animate-in fade-in slide-in-from-top-4 duration-500 mb-6 bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] text-emerald-400 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3">
-                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div
-                class="animate-in fade-in slide-in-from-top-4 duration-500 mb-6 bg-rose-500/10 border border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.15)] text-rose-400 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3">
-                <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ session('error') }}
-            </div>
-        @endif
+    <div class="flex min-h-[calc(100vh-theme(spacing.16))]">
+        <!-- Sidebar Navigation -->
+        <aside class="w-40 shrink-0 bg-[#f0f0f0] border-r border-gray-300 sticky top-[var(--nav-height)] self-start"
+            style="top: 56px; height: calc(100vh - 56px);">
+            <nav class="flex flex-col gap-0.5 p-2 pt-3">
+                <a href="{{ route('admin.dashboard') }}"
+                    class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-300 font-bold' : '' }}">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    Dashboard</a>
+                <a href="{{ route('admin.videos') }}"
+                    class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.videos') ? 'bg-gray-300 font-bold' : '' }}">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+                    Media Library</a>
+                <a href="{{ route('admin.settings') }}"
+                    class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.settings') ? 'bg-gray-300 font-bold' : '' }}">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Tools/Prefs</a>
+                <span class="text-xs text-gray-400 cursor-not-allowed px-2 py-1.5 rounded flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    View</span>
+                <span class="text-xs text-gray-400 cursor-not-allowed px-2 py-1.5 rounded flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Help</span>
+            </nav>
+        </aside>
 
-        @yield('content')
-    </main>
+        <main class="relative z-10 flex-1 p-6 md:p-8 space-y-6">
+            @if (session('success'))
+                <div
+                    class="animate-in fade-in slide-in-from-top-4 duration-500 mb-6 bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] text-emerald-400 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3">
+                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div
+                    class="animate-in fade-in slide-in-from-top-4 duration-500 mb-6 bg-rose-500/10 border border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.15)] text-rose-400 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3">
+                    <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @yield('content')
+
+        </main>
+    </div>
+
+    <!-- Create Channel Modal -->
+    <div id="createChannelModal"
+        class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Create New Channel</h3>
+            <form action="{{ route('admin.channels.store') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Channel Name</label>
+                    <input type="text" name="name" required placeholder="e.g. Ruang Tunggu Poli A"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-3">
+                        
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Screen Rotation (Orientation)</label>
+                    <select name="orientation" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        <option value="0">0° (Normal)</option>
+                        <option value="90">90° (Clockwise)</option>
+                        <option value="180">180° (Upside Down)</option>
+                        <option value="270">270° (Counter-clockwise)</option>
+                    </select>
+                </div>
+                <!-- optional: default videos? For now, just generate the channel -->
+                <div class="flex justify-end gap-2">
+                    <button type="button"
+                        onclick="document.getElementById('createChannelModal').classList.add('hidden')"
+                        class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Cancel</button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -15,10 +15,11 @@ class VideoPaused implements ShouldBroadcastNow
     public function __construct(
         public float $position,
         public float $timestamp,
+        public string $channelSlug,
     ) {}
 
     public function broadcastOn(): array
     {
-        return [new Channel('tv-broadcast')];
+        return [new Channel('tv-broadcast.'.$this->channelSlug)];
     }
 }
