@@ -317,6 +317,13 @@
             @endif
         </div>
 
+        {{-- Image Slide Container (behind schedule overlay) --}}
+        <div id="image-slide-container"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; display: none; overflow: hidden;">
+            <img id="image-slide-img" src="" alt=""
+                style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+
         {{-- Event Overlay --}}
         <div id="event-overlay">
             <h1 id="overlay-location" class="overlay-location">{{ $overlay['location'] }}</h1>
@@ -371,6 +378,7 @@
             runningText: @json($runningText),
             logoUrl: @json($logoUrl),
             overlay: @json($overlay),
+            imageSlides: @json($imageSlides),
             channelSlug: @json($channel->slug ?? 'main')
         };
 

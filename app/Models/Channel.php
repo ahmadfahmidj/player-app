@@ -37,4 +37,9 @@ class Channel extends Model
     {
         return $this->belongsToMany(EventSchedule::class);
     }
+
+    public function imageSlides(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ImageSlide::class)->orderBy('order');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ImageSlide;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -36,6 +37,11 @@ class PlayerStateResource extends JsonResource
                 'time' => Setting::get($cid, 'overlay_time', ''),
                 'organizer' => Setting::get($cid, 'overlay_organizer', ''),
             ],
+            'image_slides' => ImageSlide::where('channel_id', $cid)
+                ->orderBy('order')
+                ->get()
+                ->map(fn (ImageSlide $s) => ['url' => $s->url, 'duration' => $s->duration])
+                ->values(),
         ];
     }
 }
