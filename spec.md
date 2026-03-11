@@ -10,7 +10,7 @@ A Laravel 12 web application that allows a hospital admin to control video playb
 
 | Item            | Value            |
 | --------------- | ---------------- |
-| Server IP       | `10.10.10.10`    |
+| Server IP       | `[IP_ADDRESS]`   |
 | OS              | Ubuntu 24.04     |
 | Web Server      | Nginx            |
 | PHP             | 8.4 (Ondrej PPA) |
@@ -278,7 +278,7 @@ BROADCAST_CONNECTION=reverb
 REVERB_APP_ID=hospital-tv
 REVERB_APP_KEY=hospital-tv-key
 REVERB_APP_SECRET=hospital-tv-secret
-REVERB_HOST=10.10.10.10
+REVERB_HOST=[IP_ADDRESS]
 REVERB_PORT=8080
 REVERB_SCHEME=http
 
