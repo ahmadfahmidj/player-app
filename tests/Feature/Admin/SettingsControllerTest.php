@@ -106,3 +106,44 @@ test('logo upload validates file size', function () {
     $this->post(route('admin.settings.logo'), ['logo' => $file])
         ->assertSessionHasErrors('logo');
 });
+
+test('admin can update screen orientation to landscape', function () {
+    $this->post(route('admin.settings.screen-orientation'), ['screen_orientation' => 'landscape'])
+        ->assertRedirect(route('admin.settings'));
+
+    expect(Setting::get($this->channel->id, 'screen_orientation'))->toBe('landscape');
+});
+
+test('admin can update screen orientation to portrait 90', function () {
+    $this->post(route('admin.settings.screen-orientation'), ['screen_orientation' => 'portrait'])
+        ->assertRedirect(route('admin.settings'));
+
+    expect(Setting::get($this->channel->id, 'screen_orientation'))->toBe('portrait');
+});
+
+test('admin can update screen orientation to portrait 180', function () {
+    $this->post(route('admin.settings.screen-orientation'), ['screen_orientation' => 'portrait_180'])
+        ->assertRedirect(route('admin.settings'));
+
+    expect(Setting::get($this->channel->id, 'screen_orientation'))->toBe('portrait_180');
+});
+
+test('admin can update screen orientation to portrait 270', function () {
+    $this->post(route('admin.settings.screen-orientation'), ['screen_orientation' => 'portrait_270'])
+        ->assertRedirect(route('admin.settings'));
+
+    expect(Setting::get($this->channel->id, 'screen_orientation'))->toBe('portrait_270');
+});
+
+test('screen orientation rejects invalid values', function () {
+    $this->post(route('admin.settings.screen-orientation'), ['screen_orientation' => 'invalid'])
+        ->assertSessionHasErrors('screen_orientation');
+});
+
+test('settings page shows saved screen orientation', function () {
+    Setting::set($this->channel->id, 'screen_orientation', 'portrait_270');
+
+    $this->get(route('admin.settings'))
+        ->assertOk()
+        ->assertViewHas('screenOrientation', 'portrait_270');
+});
