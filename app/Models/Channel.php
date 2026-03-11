@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Channel extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'slug', 'is_main', 'orientation'];
 
     protected function casts(): array
@@ -28,5 +31,10 @@ class Channel extends Model
     public function settings(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Setting::class);
+    }
+
+    public function eventSchedules(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(EventSchedule::class);
     }
 }

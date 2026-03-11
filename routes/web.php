@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\EventScheduleController;
 use App\Http\Controllers\Admin\PlaybackController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\VideoController;
@@ -33,6 +34,11 @@ Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefi
     Route::post('/playback/seek', [PlaybackController::class, 'seek'])->name('playback.seek');
     Route::post('/playback/change', [PlaybackController::class, 'change'])->name('playback.change');
     Route::post('/playback/loop', [PlaybackController::class, 'loop'])->name('playback.loop');
+
+    // Event Schedules
+    Route::resource('/event-schedules', EventScheduleController::class)
+        ->except(['show'])
+        ->names('event-schedules');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
