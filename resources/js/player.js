@@ -21,6 +21,8 @@ let currentVideoId = null;
 let loopMode = 'none';
 let videoList = [];
 let channelSlug = window.PLAYER_INITIAL ? window.PLAYER_INITIAL.channelSlug : 'main';
+let slideshowTimeout = null;
+let slideshowIndex = 0;
 
 async function initPlayer() {
     // Fetch state from server
@@ -53,7 +55,9 @@ async function initPlayer() {
     if (state.overlay) {
         updateOverlay(state.overlay);
     }
-    
+
+    initImageSlideshow(state.image_slides || []);
+
     if (state.video_url) {
         player.src({ type: 'video/mp4', src: state.video_url });
         player.one('loadedmetadata', () => {
@@ -109,7 +113,45 @@ async function initPlayer() {
         })
         .listen('EventOverlayUpdated', (e) => {
             updateOverlay(e.overlayData);
+        })
+        .listen('ImageSlidesUpdated', (e) => {
+            initImageSlideshow(e.slides || []);
         });
+}
+
+function initImageSlideshow(slides) {
+    const container = document.getElementById('image-slide-container');
+    const img = document.getElementById('image-slide-img');
+    if (!container || !img) {
+        return;
+    }
+
+    // Cancel any existing slideshow
+    if (slideshowTimeout !== null) {
+        clearTimeout(slideshowTimeout);
+        slideshowTimeout = null;
+    }
+
+    if (!slides || slides.length === 0) {
+        container.style.display = 'none';
+        img.src = '';
+        return;
+    }
+
+    slideshowIndex = 0;
+
+    function showSlide(index) {
+        const slide = slides[index];
+        img.src = slide.url;
+        container.style.display = 'block';
+
+        slideshowTimeout = setTimeout(function () {
+            slideshowIndex = (index + 1) % slides.length;
+            showSlide(slideshowIndex);
+        }, slide.duration * 1000);
+    }
+
+    showSlide(0);
 }
 
 function updateOverlay(data) {

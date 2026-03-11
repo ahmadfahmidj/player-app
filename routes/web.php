@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\EventScheduleController;
+use App\Http\Controllers\Admin\ImageSlideController;
 use App\Http\Controllers\Admin\PlaybackController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\VideoController;
@@ -39,6 +40,13 @@ Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefi
     Route::resource('/event-schedules', EventScheduleController::class)
         ->except(['show'])
         ->names('event-schedules');
+
+    // Image Slides
+    Route::get('/image-slides', [ImageSlideController::class, 'index'])->name('image-slides');
+    Route::post('/image-slides', [ImageSlideController::class, 'store'])->name('image-slides.store');
+    Route::patch('/image-slides/reorder', [ImageSlideController::class, 'reorder'])->name('image-slides.reorder');
+    Route::patch('/image-slides/{imageSlide}', [ImageSlideController::class, 'update'])->name('image-slides.update');
+    Route::delete('/image-slides/{imageSlide}', [ImageSlideController::class, 'destroy'])->name('image-slides.destroy');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');

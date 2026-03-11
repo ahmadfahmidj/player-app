@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ImageSlide;
 use App\Models\Setting;
 use Illuminate\View\View;
 
@@ -42,7 +43,14 @@ class PlayerController extends Controller
 
         $screenOrientation = Setting::get($cid, 'screen_orientation', 'landscape');
 
-        return view('player', compact('runningText', 'logoUrl', 'overlay', 'channel', 'screenOrientation'));
+        $imageSlides = ImageSlide::where('channel_id', $cid)
+            ->orderBy('order')
+            ->get()
+            ->map(fn (ImageSlide $s) => ['url' => $s->url, 'duration' => $s->duration])
+            ->values()
+            ->all();
+
+        return view('player', compact('runningText', 'logoUrl', 'overlay', 'channel', 'screenOrientation', 'imageSlides'));
     }
 
     public function jadwal(): View
