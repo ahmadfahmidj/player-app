@@ -31,8 +31,10 @@
                     <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Display Mode</label>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <select name="screen_orientation" class="flex-1 bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner">
-                            <option value="landscape" {{ $screenOrientation === 'landscape' ? 'selected' : '' }}>Landscape</option>
+                            <option value="landscape" {{ $screenOrientation === 'landscape' ? 'selected' : '' }}>Landscape (0°)</option>
                             <option value="portrait" {{ $screenOrientation === 'portrait' ? 'selected' : '' }}>Portrait (Rotated 90°)</option>
+                            <option value="portrait_180" {{ $screenOrientation === 'portrait_180' ? 'selected' : '' }}>Landscape Flipped (Rotated 180°)</option>
+                            <option value="portrait_270" {{ $screenOrientation === 'portrait_270' ? 'selected' : '' }}>Portrait (Rotated 270°)</option>
                         </select>
                         <button type="submit"
                             class="shrink-0 px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex justify-center items-center gap-2">
