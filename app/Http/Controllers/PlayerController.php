@@ -52,19 +52,4 @@ class PlayerController extends Controller
 
         return view('player', compact('runningText', 'logoUrl', 'overlay', 'channel', 'screenOrientation', 'imageSlides'));
     }
-
-    public function jadwal(): View
-    {
-        // For jadwal, maybe we just use main channel or pass slug?
-        // the user didn't specify, we'll just use main channel
-        $channel = \App\Models\Channel::where('is_main', true)->firstOrFail();
-        $cid = $channel->id;
-
-        $runningText = Setting::get($cid, 'running_text', 'Selamat datang di Rumah Sakit');
-        $logoPath = Setting::get($cid, 'logo_path');
-        $logoUrl = $logoPath ? asset('storage/'.$logoPath) : null;
-        $screenOrientation = Setting::get($cid, 'screen_orientation', 'landscape');
-
-        return view('player-jadwal', compact('runningText', 'logoUrl', 'channel', 'screenOrientation'));
-    }
 }

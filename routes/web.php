@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 // Public player page (primary route)
 Route::get('/', [PlayerController::class, 'index'])->name('player');
 Route::get('/player', fn () => redirect()->route('player'));
-Route::get('/jadwal', [PlayerController::class, 'jadwal'])->name('player.jadwal');
 
 // Admin routes (auth required)
 Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefix('admin')->name('admin.')->group(function () {
