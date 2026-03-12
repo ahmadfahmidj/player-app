@@ -94,7 +94,7 @@
                                             Edit
                                         </a>
                                         <form action="{{ route('admin.event-schedules.destroy', $schedule) }}" method="POST"
-                                            onsubmit="return confirm('Delete this schedule?')">
+                                            onsubmit="event.preventDefault(); Swal.fire({ title: 'Delete this schedule?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' }).then((result) => { if (result.isConfirmed) this.submit(); });">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

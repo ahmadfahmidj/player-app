@@ -106,3 +106,22 @@ test('logo upload validates file size', function () {
     $this->post(route('admin.settings.logo'), ['logo' => $file])
         ->assertSessionHasErrors('logo');
 });
+
+test('admin can delete a logo', function () {
+    Storage::fake('public');
+    Event::fake([LogoUpdated::class]);
+
+    Storage::disk('public')->put('logo/logo.png', 'content');
+    Setting::set($this->channel->id, 'logo_path', 'logo/logo.png');
+
+    $this->delete(route('admin.settings.logo.destroy'))
+        ->assertRedirect(route('admin.settings'));
+
+    expect(Setting::get($this->channel->id, 'logo_path'))->toBeNull();
+    Storage::disk('public')->assertMissing('logo/logo.png');
+
+    Event::assertDispatched(LogoUpdated::class, function ($event) {
+        return $event->logo_url === null
+            && $event->channelSlug === $this->channel->slug;
+    });
+});

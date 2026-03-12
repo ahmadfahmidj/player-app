@@ -122,7 +122,7 @@
                                         onclick="openEditModal({{ $slide->id }}, '{{ addslashes($slide->title ?? '') }}', {{ $slide->duration }})"
                                         variant="subtle" size="xs" square icon="pencil-square" aria-label="Edit" />
                                     <form action="{{ route('admin.image-slides.destroy', $slide) }}" method="POST"
-                                        onsubmit="return confirm('Delete this slide?')"
+                                        onsubmit="event.preventDefault(); Swal.fire({ title: 'Delete this slide?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' }).then((result) => { if (result.isConfirmed) this.submit(); });"
                                         class="m-0">
                                         @csrf
                                         @method('DELETE')

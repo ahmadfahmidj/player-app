@@ -102,11 +102,10 @@
                     <div class="shrink-0 w-full md:w-64">
                         <div class="flex items-center justify-between mb-2">
                             <p class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider">Current Asset</p>
-                            <form action="{{ route('admin.settings.logo.destroy') }}" method="POST"
-                                onsubmit="return confirm('Remove this logo?');">
+                            <form id="delete-logo-form" action="{{ route('admin.settings.logo.destroy') }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
+                                <button type="button" onclick="Swal.fire({ title: 'Remove this logo?', text: 'This action cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Yes, remove it' }).then((result) => { if (result.isConfirmed) document.getElementById('delete-logo-form').submit(); })"
                                     class="text-[10px] font-bold text-red-600 uppercase tracking-wider hover:text-red-700 transition-colors flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

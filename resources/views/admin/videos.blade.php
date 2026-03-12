@@ -161,7 +161,7 @@
                                         onclick="openEditModal({{ $video->id }}, '{{ addslashes($video->title) }}')"
                                         variant="subtle" size="xs" square icon="pencil-square" aria-label="Edit" />
                                     <form action="{{ route('admin.videos.destroy', $video) }}" method="POST"
-                                        onsubmit="return confirm('Remove {{ addslashes($video->title) }}?')"
+                                        onsubmit="event.preventDefault(); Swal.fire({ title: 'Remove {{ addslashes($video->title) }}?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, remove it!' }).then((result) => { if (result.isConfirmed) this.submit(); });"
                                         class="m-0">
                                         @csrf
                                         @method('DELETE')

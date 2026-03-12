@@ -13,7 +13,7 @@ class LogoUpdated implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public string $logo_url,
+        public ?string $logo_url,
         public string $channelSlug,
     ) {}
 
