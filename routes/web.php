@@ -20,14 +20,17 @@ Route::middleware(['auth', \App\Http\Middleware\SetActiveChannel::class])->prefi
     // Channels
     Route::post('/channels/switch', [\App\Http\Controllers\Admin\ChannelController::class, 'switch'])->name('channels.switch');
     Route::post('/channels', [\App\Http\Controllers\Admin\ChannelController::class, 'store'])->name('channels.store');
+    Route::put('/channels/{channel}', [\App\Http\Controllers\Admin\ChannelController::class, 'update'])->name('channels.update');
     Route::delete('/channels/{channel}', [\App\Http\Controllers\Admin\ChannelController::class, 'destroy'])->name('channels.destroy');
+    Route::post('/channels/refresh', [\App\Http\Controllers\Admin\ChannelController::class, 'refresh'])->name('channels.refresh');
 
     // Video management
     Route::get('/videos', [VideoController::class, 'index'])->name('videos');
     Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::patch('/videos/reorder', [VideoController::class, 'reorder'])->name('videos.reorder');
     Route::patch('/videos/{video}', [VideoController::class, 'update'])->name('videos.update');
     Route::delete('/videos/{video}', [VideoController::class, 'destroy'])->name('videos.destroy');
-    Route::patch('/videos/reorder', [VideoController::class, 'reorder'])->name('videos.reorder');
+    Route::delete('/videos/{video}/permanent', [VideoController::class, 'forceDestroy'])->name('videos.force-destroy');
 
     // Playback control
     Route::post('/playback/play', [PlaybackController::class, 'play'])->name('playback.play');

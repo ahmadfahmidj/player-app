@@ -59,7 +59,7 @@ class ImageSlideController extends Controller
 
         $this->broadcastSlides($activeChannel);
 
-        return redirect()->route('admin.image-slides')->with('success', 'Image slide uploaded.');
+        return redirect()->route('admin.image-slides')->with('success', __('Image slide uploaded.'));
     }
 
     public function update(ImageSlideUpdateRequest $request, ImageSlide $imageSlide): RedirectResponse|JsonResponse
@@ -79,7 +79,7 @@ class ImageSlideController extends Controller
             return response()->json(['success' => true]);
         }
 
-        return redirect()->route('admin.image-slides')->with('success', 'Image slide updated.');
+        return redirect()->route('admin.image-slides')->with('success', __('Image slide updated.'));
     }
 
     public function destroy(ImageSlide $imageSlide): RedirectResponse
@@ -91,7 +91,7 @@ class ImageSlideController extends Controller
 
         $this->broadcastSlides($channel);
 
-        return redirect()->route('admin.image-slides')->with('success', 'Image slide deleted.');
+        return redirect()->route('admin.image-slides')->with('success', __('Image slide deleted.'));
     }
 
     public function reorder(Request $request): JsonResponse

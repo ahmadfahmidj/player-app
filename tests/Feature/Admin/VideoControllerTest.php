@@ -139,3 +139,22 @@ test('authenticated user can reorder videos in playlist', function () {
         'order' => 2,
     ]);
 });
+
+test('authenticated user can permanently delete a video from library', function () {
+    $filename = 'deleteme.mp4';
+    Storage::disk('public')->put('videos/'.$filename, 'fake content');
+
+    $video = Video::factory()->create([
+        'filename' => $filename,
+        'path' => 'videos/'.$filename,
+    ]);
+    $this->channel->videos()->attach($video->id, ['order' => 1]);
+
+    $response = $this->delete(route('admin.videos.force-destroy', $video));
+
+    $response->assertRedirect(route('admin.videos'));
+
+    $this->assertDatabaseMissing('videos', ['id' => $video->id]);
+    $this->assertDatabaseMissing('channel_video', ['video_id' => $video->id]);
+    Storage::disk('public')->assertMissing('videos/'.$filename);
+});

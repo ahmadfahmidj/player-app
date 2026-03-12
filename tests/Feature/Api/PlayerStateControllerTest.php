@@ -87,3 +87,31 @@ test('player state includes logo url when logo is set', function () {
 
     expect($response->json('logo_url'))->toContain('logo/hospital.png');
 });
+
+test('player state returns correct video for non-main channel', function () {
+    $mainVideo = Video::factory()->create(['title' => 'Main Video']);
+    BroadcastState::current($this->channel->id)->update(['current_video_id' => $mainVideo->id]);
+
+    $otherChannel = \App\Models\Channel::create([
+        'name' => 'Lobby',
+        'slug' => 'lobby',
+        'is_main' => false,
+    ]);
+    $lobbyVideo = Video::factory()->create(['title' => 'Lobby Video']);
+    BroadcastState::create([
+        'channel_id' => $otherChannel->id,
+        'current_video_id' => $lobbyVideo->id,
+        'current_position' => 0,
+        'is_playing' => true,
+        'loop_mode' => 'none',
+        'started_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $this->getJson(route('api.player.state', ['channel' => 'lobby']))
+        ->assertOk()
+        ->assertJson([
+            'current_video_id' => $lobbyVideo->id,
+            'video_title' => 'Lobby Video',
+        ]);
+});

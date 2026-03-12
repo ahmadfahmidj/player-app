@@ -90,7 +90,7 @@ async function initPlayer() {
             currentVideoId = e.video_id;
             loopMode = e.loop_mode;
             // Fetch the video URL from state
-            fetch('/api/player/state').then(r => r.json()).then(s => {
+            fetch(`/api/player/state?channel=${channelSlug}`).then(r => r.json()).then(s => {
                 if (s.video_url) {
                     player.src({ type: 'video/mp4', src: s.video_url });
                     player.one('loadedmetadata', () => {
@@ -116,6 +116,9 @@ async function initPlayer() {
         })
         .listen('ImageSlidesUpdated', (e) => {
             initImageSlideshow(e.slides || []);
+        })
+        .listen('ForceRefresh', () => {
+            window.location.reload();
         });
 }
 

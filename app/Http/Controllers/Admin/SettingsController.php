@@ -57,7 +57,7 @@ class SettingsController extends Controller
         // We will make events channel specific later, for now we will send the channel slug
         RunningTextUpdated::dispatch($text, $activeChannel->slug);
 
-        return redirect()->route('admin.settings')->with('success', 'Running text updated.');
+        return redirect()->route('admin.settings')->with('success', __('Running text updated.'));
     }
 
     public function updateScreenOrientation(Request $request): RedirectResponse
@@ -71,7 +71,7 @@ class SettingsController extends Controller
 
         Setting::set($cid, 'screen_orientation', $validated['screen_orientation']);
 
-        return redirect()->route('admin.settings')->with('success', 'Screen orientation updated.');
+        return redirect()->route('admin.settings')->with('success', __('Screen orientation updated.'));
     }
 
     public function updateLogo(Request $request): RedirectResponse
@@ -98,7 +98,7 @@ class SettingsController extends Controller
         $logoUrl = asset('storage/'.$logoPath);
         LogoUpdated::dispatch($logoUrl, $activeChannel->slug);
 
-        return redirect()->route('admin.settings')->with('success', 'Logo updated.');
+        return redirect()->route('admin.settings')->with('success', __('Logo updated.'));
     }
 
     public function destroyLogo(): RedirectResponse
@@ -115,7 +115,7 @@ class SettingsController extends Controller
 
         LogoUpdated::dispatch(null, $activeChannel->slug);
 
-        return redirect()->route('admin.settings')->with('success', 'Logo removed.');
+        return redirect()->route('admin.settings')->with('success', __('Logo removed.'));
     }
 
     public function updateEventOverlay(EventOverlayRequest $request): RedirectResponse
@@ -143,6 +143,6 @@ class SettingsController extends Controller
 
         EventOverlayUpdated::dispatch($overlayData, $activeChannel->slug);
 
-        return redirect()->route('admin.settings')->with('success', 'Event overlay updated.');
+        return redirect()->route('admin.settings')->with('success', __('Event overlay updated.'));
     }
 }

@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Video Player Library')
+@section('title', __('Video Player Library'))
 
 @section('content')
     <div class="animate-in fade-in duration-300 w-full max-w-6xl mx-auto">
@@ -7,10 +7,8 @@
             class="flex flex-col md:flex-row justify-between items-center bg-gray-100 border border-gray-400 px-4 py-3 rounded-t shadow-sm">
             <div>
                 <h1 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L2 22H22L12 2Z" />
-                    </svg>
-                    Media Library & Playlist
+                    <img src="{{ asset('favicon.svg') }}" class="w-5 h-5" alt="Logo">
+                    {{ __('Media Library & Playlist') }}
                 </h1>
             </div>
         </div>
@@ -40,8 +38,8 @@
                                 class="w-24 h-24 text-orange-500/50 mb-2 drop-shadow-lg">
                                 <path d="M12 2L2 22H22L12 2Z" />
                             </svg>
-                            <span class="text-gray-400 font-bold text-xl block">Mainan media player</span>
-                            <span class="text-gray-500 text-sm mt-1">No media selected</span>
+                            <span class="text-gray-400 font-bold text-xl block">{{ __('Mainan media player') }}</span>
+                            <span class="text-gray-500 text-sm mt-1">{{ __('No media selected') }}</span>
                         </div>
                     @endif
                 </div>
@@ -122,10 +120,10 @@
                     <span class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-500" fill="currentColor"
                             viewBox="0 0 24 24">
                             <path d="M22 6H12l-2-2H2v16h20V6z" />
-                        </svg> Playlist</span>
+                        </svg> {{ __('Playlist') }}</span>
                     <span
                         class="font-normal text-[10px] text-orange-600 bg-orange-100 border border-orange-200 px-2 py-0.5 rounded">{{ $videos->count() }}
-                        items</span>
+                        {{ __('items') }}</span>
                 </div>
 
                 {{-- Playlist Queue --}}
@@ -137,8 +135,8 @@
                             <svg class="w-10 h-10 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
                             </svg>
-                            Empty playlist<br>
-                            <span class="text-[10px]">Drag from Media Library</span>
+                            {{ __('Empty playlist') }}<br>
+                            <span class="text-[10px]">{{ __('Drag from Media Library') }}</span>
                         </div>
                     @else
                         @foreach ($videos as $index => $video)
@@ -182,10 +180,10 @@
                     <span class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-500" fill="currentColor"
                             viewBox="0 0 24 24">
                             <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
-                        </svg> Library</span>
+                        </svg> {{ __('Library') }}</span>
                     <span
                         class="font-normal text-[10px] text-blue-600 bg-blue-100 border border-blue-200 px-2 py-0.5 rounded">{{ $allVideos->count() }}
-                        items</span>
+                        {{ __('items') }}</span>
                 </div>
 
                 {{-- Library List --}}
@@ -205,6 +203,13 @@
                                 <flux:button
                                     onclick="openEditModal({{ $v->id }}, '{{ addslashes($v->title) }}')"
                                     variant="subtle" size="xs" square icon="pencil-square" aria-label="Edit" />
+                                <form action="{{ route('admin.videos.force-destroy', $v) }}" method="POST"
+                                    onsubmit="event.preventDefault(); Swal.fire({ title: '{{ __('Permanently delete') }} {{ addslashes($v->title) }}?', text: '{{ __('This will remove the video file and database record. This cannot be undone.') }}', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: '{{ __('Yes, delete permanently!') }}' }).then((result) => { if (result.isConfirmed) this.submit(); });"
+                                    class="m-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <flux:button type="submit" variant="subtle" size="xs" square icon="trash" aria-label="Delete" />
+                                </form>
                             </div>
                         </div>
                     @endforeach
@@ -216,7 +221,7 @@
                         <svg class="w-4 h-4 text-orange-50" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                         </svg>
-                        Upload New
+                        {{ __('Upload New') }}
                     </h3>
                     <form action="{{ route('admin.videos.store') }}" method="POST" enctype="multipart/form-data"
                         class="space-y-3">
@@ -235,7 +240,7 @@
 
                         <div>
                             <input type="text" name="title" value="{{ old('title') }}"
-                                placeholder="Video Title (blank = use filename)"
+                                placeholder="{{ __('Video Title (blank = use filename)') }}"
                                 class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                             @error('title')
                                 <p class="mt-1 text-xs text-red-600 font-semibold">{{ $message }}</p>
@@ -249,7 +254,7 @@
                                 <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
                                 </svg>
-                                <span class="file-label-text">Select .mp4 File...</span>
+                                <span class="file-label-text">{{ __('Select .mp4 File...') }}</span>
                             </div>
                         </div>
                         @error('video')
@@ -259,14 +264,13 @@
                         <div class="flex items-center gap-2 mt-2 pt-1">
                             <input type="checkbox" id="rotate-portrait" name="rotate" value="1"
                                 class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
-                            <label for="rotate-portrait" class="text-[10px] font-bold text-gray-800">Rotate Video 90° for
-                                Portrait TV</label>
+                            <label for="rotate-portrait" class="text-[10px] font-bold text-gray-800">{{ __('Rotate Video 90° for Portrait TV') }}</label>
                         </div>
 
                         <div class="pt-1">
                             <button type="submit"
                                 class="w-full py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-500 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all">
-                                Upload & Library
+                                {{ __('Upload & Library') }}
                             </button>
                         </div>
                     </form>
@@ -283,7 +287,7 @@
                     <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                     </svg>
-                    Edit Video
+                    {{ __('Edit Video') }}
                 </h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -294,20 +298,20 @@
             <form id="edit-modal-form" onsubmit="saveVideo(event)" class="p-4 space-y-4">
                 <input type="hidden" id="edit-video-id">
                 <div>
-                    <label for="edit-title" class="block text-xs font-bold text-gray-700 uppercase mb-1">Title</label>
+                    <label for="edit-title" class="block text-xs font-bold text-gray-700 uppercase mb-1">{{ __('Title') }}</label>
                     <input type="text" id="edit-title" name="title" required
                         class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                 </div>
                 <div class="flex items-center gap-2">
                     <input type="checkbox" id="edit-rotate" name="rotate" value="1"
                         class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
-                    <label for="edit-rotate" class="text-xs font-bold text-gray-700">Rotate Video 90° for Portrait TV</label>
+                    <label for="edit-rotate" class="text-xs font-bold text-gray-700">{{ __('Rotate Video 90° for Portrait TV') }}</label>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
                     <button type="button" onclick="closeEditModal()"
-                        class="px-4 py-2 text-xs font-bold uppercase bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded text-gray-700 transition-colors">Cancel</button>
+                        class="px-4 py-2 text-xs font-bold uppercase bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded text-gray-700 transition-colors">{{ __('Cancel') }}</button>
                     <button type="submit" id="edit-submit-btn"
-                        class="px-4 py-2 text-xs font-bold uppercase bg-orange-500 hover:bg-orange-600 border border-orange-600 rounded text-white shadow transition-colors">Save</button>
+                        class="px-4 py-2 text-xs font-bold uppercase bg-orange-500 hover:bg-orange-600 border border-orange-600 rounded text-white shadow transition-colors">{{ __('Save') }}</button>
                 </div>
             </form>
         </div>

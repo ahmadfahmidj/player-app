@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Image Slides')
+@section('title', __('Image Slides'))
 
 @section('content')
     <div class="animate-in fade-in duration-300 w-full max-w-6xl mx-auto">
@@ -7,13 +7,10 @@
             class="flex flex-col md:flex-row justify-between items-center bg-gray-100 border border-gray-400 px-4 py-3 rounded-t shadow-sm">
             <div>
                 <h1 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Image Slides
+                    <img src="{{ asset('favicon.svg') }}" class="w-5 h-5" alt="Logo">
+                    {{ __('Image Slides') }}
                 </h1>
-                <p class="text-xs text-gray-500 mt-0.5">Fullscreen image slideshow shown behind the schedule overlay on the player.</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ __('Fullscreen image slideshow shown behind the schedule overlay on the player.') }}</p>
             </div>
         </div>
 
@@ -42,8 +39,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-gray-400 font-bold text-xl block">No images yet</span>
-                            <span class="text-gray-500 text-sm mt-1">Upload images to build the slideshow</span>
+                            <span class="text-gray-400 font-bold text-xl block">{{ __('No images yet') }}</span>
+                            <span class="text-gray-500 text-sm mt-1">{{ __('Upload images to build the slideshow') }}</span>
                         </div>
                     @endif
                 </div>
@@ -52,12 +49,12 @@
                 <div class="bg-gray-200 px-4 py-2 flex items-center justify-between border-t border-gray-400 shadow-inner">
                     <span id="preview-duration-label" class="text-xs text-gray-600 font-semibold">
                         @if ($slides->isNotEmpty())
-                            Duration: {{ $slides->first()->duration }}s
+                            {{ __('Duration') }}: {{ $slides->first()->duration }}s
                         @else
-                            No image selected
+                            {{ __('No image selected') }}
                         @endif
                     </span>
-                    <span class="text-[10px] text-gray-400">Click a slide to preview</span>
+                    <span class="text-[10px] text-gray-400">{{ __('Click a slide to preview') }}</span>
                 </div>
             </div>
 
@@ -72,11 +69,11 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                         </svg>
-                        Slide Order
+                        {{ __('Slide Order') }}
                     </span>
                     <span
                         class="font-normal text-[10px] text-orange-600 bg-orange-100 border border-orange-200 px-2 py-0.5 rounded">{{ $slides->count() }}
-                        slides</span>
+                        {{ __('slides') }}</span>
                 </div>
 
                 {{-- Slides List --}}
@@ -88,7 +85,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            No slides yet
+                            {{ __('No slides yet') }}
                         </div>
                     @else
                         @foreach ($slides as $index => $slide)
@@ -122,7 +119,7 @@
                                         onclick="openEditModal({{ $slide->id }}, '{{ addslashes($slide->title ?? '') }}', {{ $slide->duration }})"
                                         variant="subtle" size="xs" square icon="pencil-square" aria-label="Edit" />
                                     <form action="{{ route('admin.image-slides.destroy', $slide) }}" method="POST"
-                                        onsubmit="event.preventDefault(); Swal.fire({ title: 'Delete this slide?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' }).then((result) => { if (result.isConfirmed) this.submit(); });"
+                                        onsubmit="event.preventDefault(); Swal.fire({ title: '{{ __('Delete this slide?') }}', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: '{{ __('Yes, delete it!') }}', cancelButtonText: '{{ __('Cancel') }}' }).then((result) => { if (result.isConfirmed) this.submit(); });"
                                         class="m-0">
                                         @csrf
                                         @method('DELETE')
@@ -140,7 +137,7 @@
                         <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                         </svg>
-                        Upload New Slide
+                        {{ __('Upload New Slide') }}
                     </h3>
 
                     <form action="{{ route('admin.image-slides.store') }}" method="POST" enctype="multipart/form-data"
@@ -160,7 +157,7 @@
 
                         <div>
                             <input type="text" name="title" value="{{ old('title') }}"
-                                placeholder="Slide Title (blank = use filename)"
+                                placeholder="{{ __('Slide Title (blank = use filename)') }}"
                                 class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                         </div>
 
@@ -173,11 +170,11 @@
                                     <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
                                     </svg>
-                                    <span class="file-label-text">Select Image...</span>
+                                    <span class="file-label-text">{{ __('Select Image...') }}</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
-                                <label class="text-xs font-bold text-gray-700 whitespace-nowrap">Duration (s):</label>
+                                <label class="text-xs font-bold text-gray-700 whitespace-nowrap">{{ __('Duration') }} (s):</label>
                                 <input type="number" name="duration" value="{{ old('duration', 5) }}" min="1" max="300" required
                                     class="w-16 text-xs px-2 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white text-center">
                             </div>
@@ -193,13 +190,13 @@
                         <div class="flex items-center gap-2">
                             <input type="checkbox" id="rotate-upload" name="rotate" value="1"
                                 class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
-                            <label for="rotate-upload" class="text-[10px] font-bold text-gray-800">Rotate Image 90° clockwise</label>
+                            <label for="rotate-upload" class="text-[10px] font-bold text-gray-800">{{ __('Rotate Image 90° clockwise') }}</label>
                         </div>
 
                         <div class="pt-1">
                             <button type="submit"
                                 class="w-full py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-500 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all">
-                                Upload Slide
+                                {{ __('Upload Slide') }}
                             </button>
                         </div>
                     </form>
@@ -216,7 +213,7 @@
                     <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                     </svg>
-                    Edit Slide
+                    {{ __('Edit Slide') }}
                 </h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -227,25 +224,25 @@
             <form id="edit-form" onsubmit="saveSlide(event)" class="p-4 space-y-4">
                 <input type="hidden" id="edit-slide-id">
                 <div>
-                    <label for="edit-title" class="block text-xs font-bold text-gray-700 uppercase mb-1">Title</label>
+                    <label for="edit-title" class="block text-xs font-bold text-gray-700 uppercase mb-1">{{ __('Title') }}</label>
                     <input type="text" id="edit-title" name="title"
                         class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                 </div>
                 <div>
-                    <label for="edit-duration" class="block text-xs font-bold text-gray-700 uppercase mb-1">Duration (seconds)</label>
+                    <label for="edit-duration" class="block text-xs font-bold text-gray-700 uppercase mb-1">{{ __('Duration') }} ({{ __('seconds') }})</label>
                     <input type="number" id="edit-duration" name="duration" min="1" max="300" required
                         class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                 </div>
                 <div class="flex items-center gap-2">
                     <input type="checkbox" id="edit-rotate" name="rotate" value="1"
                         class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
-                    <label for="edit-rotate" class="text-xs font-bold text-gray-700">Rotate Image 90° clockwise</label>
+                    <label for="edit-rotate" class="text-xs font-bold text-gray-700">{{ __('Rotate Image 90° clockwise') }}</label>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
                     <button type="button" onclick="closeEditModal()"
-                        class="px-4 py-2 text-xs font-bold uppercase bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded text-gray-700 transition-colors">Cancel</button>
+                        class="px-4 py-2 text-xs font-bold uppercase bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded text-gray-700 transition-colors">{{ __('Cancel') }}</button>
                     <button type="submit" id="edit-submit-btn"
-                        class="px-4 py-2 text-xs font-bold uppercase bg-orange-500 hover:bg-orange-600 border border-orange-600 rounded text-white shadow transition-colors">Save</button>
+                        class="px-4 py-2 text-xs font-bold uppercase bg-orange-500 hover:bg-orange-600 border border-orange-600 rounded text-white shadow transition-colors">{{ __('Save') }}</button>
                 </div>
             </form>
         </div>
@@ -265,7 +262,7 @@
     <script>
         // File input label
         document.querySelector('.file-input-slide').addEventListener('change', function(e) {
-            const name = e.target.files[0] ? e.target.files[0].name : 'Select Image...';
+            const name = e.target.files[0] ? e.target.files[0].name : '{{ __('Select Image...') }}';
             document.querySelector('.file-label-text').innerText = name;
         });
 
@@ -275,7 +272,7 @@
             const dur = document.getElementById('preview-duration-label');
             if (img) { img.src = url; img.alt = title; }
             if (osd) osd.innerText = title;
-            if (dur) dur.innerText = 'Duration: ' + duration + 's';
+            if (dur) dur.innerText = '{{ __('Duration') }}: ' + duration + 's';
         }
 
         function openEditModal(slideId, currentTitle, currentDuration) {
@@ -303,7 +300,7 @@
             const rotate = document.getElementById('edit-rotate').checked;
             const submitBtn = document.getElementById('edit-submit-btn');
 
-            submitBtn.textContent = 'Saving...';
+            submitBtn.textContent = '{{ __('Saving...') }}';
             submitBtn.disabled = true;
 
             fetch(`/admin/image-slides/${slideId}`, {
@@ -320,7 +317,7 @@
                 if (data.success) { window.location.reload(); }
             })
             .catch(() => {
-                submitBtn.textContent = 'Save';
+                submitBtn.textContent = '{{ __('Save') }}';
                 submitBtn.disabled = false;
             });
         }

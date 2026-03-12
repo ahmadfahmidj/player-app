@@ -39,7 +39,7 @@ class VideoController extends Controller
                 $activeChannel->videos()->attach($video->id, ['order' => $maxOrder + 1]);
             }
 
-            return redirect()->route('admin.videos')->with('success', 'Video added to playlist.');
+            return redirect()->route('admin.videos')->with('success', __('Video added to playlist.'));
         }
 
         // Otherwise uploading a new video
@@ -80,7 +80,7 @@ class VideoController extends Controller
             ProcessVideoRotation::dispatch($video);
         }
 
-        return redirect()->route('admin.videos')->with('success', 'Video uploaded and added to playlist.');
+        return redirect()->route('admin.videos')->with('success', __('Video uploaded and added to playlist.'));
     }
 
     public function update(Request $request, Video $video): RedirectResponse|\Illuminate\Http\JsonResponse
@@ -100,7 +100,7 @@ class VideoController extends Controller
             return response()->json(['success' => true, 'title' => $video->title]);
         }
 
-        return redirect()->route('admin.videos')->with('success', 'Video updated.');
+        return redirect()->route('admin.videos')->with('success', __('Video updated.'));
     }
 
     public function destroy(Video $video): RedirectResponse
@@ -116,7 +116,21 @@ class VideoController extends Controller
         //     $video->delete();
         // }
 
-        return redirect()->route('admin.videos')->with('success', 'Video removed from playlist.');
+        return redirect()->route('admin.videos')->with('success', __('Video removed from playlist.'));
+    }
+
+    public function forceDestroy(Video $video): RedirectResponse
+    {
+        // Detach from all channels
+        $video->channels()->detach();
+
+        // Delete the file from storage
+        Storage::disk('public')->delete($video->path);
+
+        // Delete the database record
+        $video->delete();
+
+        return redirect()->route('admin.videos')->with('success', __('Video permanently deleted.'));
     }
 
     public function reorder(Request $request): \Illuminate\Http\JsonResponse

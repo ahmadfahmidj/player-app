@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin') — Hospital TV</title>
+    <title>@yield('title', __('Admin')) — {{ config('app.name', 'Laravel') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="channel-slug" content="{{ $activeChannel->slug ?? 'default' }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
@@ -46,17 +46,13 @@
         <div class="bg-gray-100 flex items-center justify-between px-4 py-2 border-b border-gray-300">
             <div class="flex items-center gap-4">
                 <div class="flex gap-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500 border border-red-600"></div>
+                    {{-- <div class="w-3 h-3 rounded-full bg-red-500 border border-red-600"></div>
                     <div class="w-3 h-3 rounded-full bg-yellow-400 border border-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500 border border-green-600"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500 border border-green-600"></div> --}}
                 </div>
                 <div class="flex items-center gap-2 text-xs font-semibold text-gray-800">
-                    <div class="w-4 h-4 text-orange-500 hidden md:block">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 22H22L12 2Z" />
-                        </svg>
-                    </div>
-                    Mainan TV Admin
+                    <img src="{{ asset('favicon.svg') }}" class="w-4 h-4 hidden md:block" alt="Logo">
+                    {{ config('app.name', 'Laravel') }} {{ __('Admin') }}
                 </div>
                 <div class="flex items-center gap-4">
                     <form action="{{ route('admin.channels.switch') }}" method="POST" class="flex items-center">
@@ -66,7 +62,7 @@
                             @foreach ($allChannels as $c)
                                 <option value="{{ $c->id }}"
                                     {{ $c->id == ($activeChannel->id ?? 0) ? 'selected' : '' }}>
-                                    {{ $c->name }} {{ $c->is_main ? '(Main)' : '' }}
+                                    {{ $c->name }} {{ $c->is_main ? '(' . __('Main') . ')' : '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -78,10 +74,29 @@
                                 class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4"></path>
-                            </svg> New</button>
+                            </svg> {{ __('New') }}</button>
+                        @if (isset($activeChannel))
+                            <button type="button" onclick="forceRefreshPlayer()"
+                                class="text-xs px-2 py-1 bg-gray-200 border border-gray-400 hover:bg-gray-300 text-orange-600 font-bold rounded shadow-sm transition-all flex items-center gap-1 leading-none"><svg
+                                    class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                    </path>
+                                </svg> {{ __('Refresh TV') }}</button>
+                        @endif
+                        @if (isset($activeChannel))
+                            <button type="button"
+                                onclick="document.getElementById('editChannelSlugModal').classList.remove('hidden')"
+                                class="text-xs px-2 py-1 bg-gray-200 border border-gray-400 hover:bg-gray-300 text-blue-600 font-bold rounded shadow-sm transition-all flex items-center gap-1 leading-none"><svg
+                                    class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                    </path>
+                                </svg> {{ __('Slug') }}</button>
+                        @endif
                         @if (isset($activeChannel) && !$activeChannel->is_main)
                             <form action="{{ route('admin.channels.destroy', $activeChannel) }}" method="POST"
-                                onsubmit="event.preventDefault(); Swal.fire({ title: 'Delete this channel?', text: 'This cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' }).then((result) => { if (result.isConfirmed) this.submit(); });">
+                                onsubmit="event.preventDefault(); Swal.fire({ title: '{{ __('Delete this channel?') }}', text: '{{ __('This cannot be undone.') }}', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: '{{ __('Yes, delete it!') }}', cancelButtonText: '{{ __('Cancel') }}' }).then((result) => { if (result.isConfirmed) this.submit(); });">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
@@ -90,7 +105,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                         </path>
-                                    </svg> Del</button>
+                                    </svg> {{ __('Del') }}</button>
                             </form>
                         @endif
                     </div>
@@ -101,7 +116,7 @@
                 <a href="{{ isset($activeChannel) && !$activeChannel->is_main ? route('player.channel', $activeChannel->slug) : route('player') }}"
                     target="_blank"
                     class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1 bg-gray-200 text-gray-700 rounded border border-gray-400 hover:bg-gray-300 transition-all shadow-sm">
-                    Player Screen
+                    {{ __('Player Screen') }}
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -111,7 +126,7 @@
                     @csrf
                     <button type="submit"
                         class="text-xs font-medium text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 bg-gray-200 border border-gray-400 px-2 py-1 rounded shadow-sm hover:bg-white">
-                        Quit
+                        {{ __('Quit') }}
                     </button>
                 </form>
             </div>
@@ -129,28 +144,28 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    Dashboard</a>
+                    {{ __('Dashboard') }}</a>
                 <a href="{{ route('admin.videos') }}"
                     class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.videos') ? 'bg-gray-300 font-bold' : '' }}">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
                     </svg>
-                    Media Library</a>
+                    {{ __('Media Library') }}</a>
                 <a href="{{ route('admin.image-slides') }}"
                     class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.image-slides') ? 'bg-gray-300 font-bold' : '' }}">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Image Slides</a>
+                    {{ __('Image Slides') }}</a>
                 <a href="{{ route('admin.event-schedules.index') }}"
                     class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.event-schedules.*') ? 'bg-gray-300 font-bold' : '' }}">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Event Schedules</a>
+                    {{ __('Event Schedules') }}</a>
                 <a href="{{ route('admin.settings') }}"
                     class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 {{ request()->routeIs('admin.settings') ? 'bg-gray-300 font-bold' : '' }}">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,19 +174,19 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    Tools/Prefs</a>
+                    {{ __('Tools/Prefs') }}</a>
                 <span class="text-xs text-gray-400 cursor-not-allowed px-2 py-1.5 rounded flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    View</span>
+                    {{ __('View') }}</span>
                 <span class="text-xs text-gray-400 cursor-not-allowed px-2 py-1.5 rounded flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Help</span>
+                    {{ __('Help') }}</span>
             </nav>
         </aside>
 
@@ -212,35 +227,98 @@
         </main>
     </div>
 
+    <!-- Edit Channel Slug Modal -->
+    @if (isset($activeChannel))
+        <div id="editChannelSlugModal"
+            class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50 backdrop-blur-sm">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">{{ __('Edit Channel Slug') }}</h3>
+                <p class="text-sm text-gray-600 mb-3">{{ __('Channel:') }}
+                    <strong>{{ $activeChannel->name }}</strong></p>
+                <form action="{{ route('admin.channels.update', $activeChannel) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Slug') }}</label>
+                        <input type="text" name="slug" required value="{{ $activeChannel->slug }}"
+                            pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-1">
+                        <p class="text-xs text-gray-500">{{ __('Only lowercase letters, numbers, and hyphens.') }}</p>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button"
+                            onclick="document.getElementById('editChannelSlugModal').classList.add('hidden')"
+                            class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">{{ __('Cancel') }}</button>
+                        <button type="submit"
+                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">{{ __('Save') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <script>
+        function forceRefreshPlayer() {
+            fetch('{{ route('admin.channels.refresh') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                },
+            }).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: '{{ __('Refresh command sent to player screens.') }}',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                });
+            });
+        }
+    </script>
+
     <!-- Create Channel Modal -->
     <div id="createChannelModal"
         class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50 backdrop-blur-sm">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Create New Channel</h3>
+            <h3 class="text-lg font-bold text-gray-800 mb-4">{{ __('Create New Channel') }}</h3>
             <form action="{{ route('admin.channels.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Channel Name</label>
-                    <input type="text" name="name" required placeholder="e.g. Ruang Tunggu Poli A"
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Channel Name') }}</label>
+                    <input type="text" name="name" id="createChannelName" required
+                        placeholder="{{ __('e.g. Ruang Tunggu Poli A') }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-3"
+                        oninput="document.getElementById('createChannelSlug').value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')">
 
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Screen Rotation (Orientation)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Slug') }}</label>
+                    <input type="text" name="slug" id="createChannelSlug"
+                        placeholder="{{ __('auto-generated-from-name') }}" pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-1">
+                    <p class="text-xs text-gray-500 mb-3">
+                        {{ __('Leave empty to auto-generate from name. Only lowercase letters, numbers, and hyphens.') }}
+                    </p>
+
+                    <label
+                        class="block text-sm font-medium text-gray-700 mb-1">{{ __('Screen Rotation (Orientation)') }}</label>
                     <select name="orientation"
                         class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                         disabled>
-                        <option value="0">0° (Normal)</option>
-                        <option value="90">90° (Clockwise)</option>
-                        <option value="180">180° (Upside Down)</option>
-                        <option value="270">270° (Counter-clockwise)</option>
+                        <option value="0">{{ __('0° (Normal)') }}</option>
+                        <option value="90">{{ __('90° (Clockwise)') }}</option>
+                        <option value="180">{{ __('180° (Upside Down)') }}</option>
+                        <option value="270">{{ __('270° (Counter-clockwise)') }}</option>
                     </select>
                 </div>
                 <!-- optional: default videos? For now, just generate the channel -->
                 <div class="flex justify-end gap-2">
                     <button type="button"
                         onclick="document.getElementById('createChannelModal').classList.add('hidden')"
-                        class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Cancel</button>
+                        class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">{{ __('Cancel') }}</button>
                     <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">Create</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">{{ __('Create') }}</button>
                 </div>
             </form>
         </div>

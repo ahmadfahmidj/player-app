@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Dashboard')
+@section('title', __('Dashboard'))
 
 @section('content')
     <div class="animate-in fade-in duration-300 w-full max-w-6xl mx-auto space-y-4">
@@ -8,11 +8,8 @@
             class="flex flex-col md:flex-row justify-between items-center bg-[#f0f0f0] border border-gray-400 px-4 py-3 rounded shadow shadow-gray-400/20">
             <div>
                 <h1 class="text-lg font-bold text-gray-800 flex items-center gap-2 shadow-sm">
-                    <svg class="w-5 h-5 text-orange-500 hover:scale-110 transition-transform" viewBox="0 0 24 24"
-                        fill="currentColor">
-                        <path d="M12 2L2 22H22L12 2Z" />
-                    </svg>
-                    Remote Access / Playback Network
+                    <img src="{{ asset('favicon.svg') }}" class="w-5 h-5 hover:scale-110 transition-transform" alt="Logo">
+                    {{ __('Remote Access / Playback Network') }}
                 </h1>
             </div>
         </div>
@@ -29,7 +26,7 @@
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
-                        Connection Status
+                        {{ __('Connection Status') }}
                     </h2>
 
                     <div class="flex items-center gap-4 bg-white rounded border border-gray-300 shadow-inner p-3">
@@ -43,15 +40,15 @@
                             <div class="flex items-baseline gap-3 pb-1 mb-1 border-b border-gray-100">
                                 <span id="status-text"
                                     class="text-sm font-bold {{ $state->is_playing ? 'text-green-600' : 'text-gray-500' }} uppercase tracking-wider">
-                                    {{ $state->is_playing ? '▶ Playing' : '■ Paused' }}
+                                    {{ $state->is_playing ? '▶ ' . __('Playing') : '■ ' . __('Paused') }}
                                 </span>
                                 <span id="current-video-title" class="text-gray-800 font-medium truncate text-sm">
-                                    {{ $state->video?->title ?? 'No video selected' }}
+                                    {{ $state->video?->title ?? __('No video selected') }}
                                 </span>
                             </div>
                             <div
                                 class="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-                                State: <span id="current-loop"
+                                {{ __('State') }}: <span id="current-loop"
                                     class="text-blue-600 bg-blue-50 border border-blue-200 px-1 rounded">{{ $state->loop_mode }}</span>
                             </div>
                         </div>
@@ -67,7 +64,7 @@
                                 d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
                             </path>
                         </svg>
-                        Control Interface
+                        {{ __('Control Interface') }}
                     </h2>
 
                     <!-- VLC style big buttons -->
@@ -76,13 +73,13 @@
                             class="px-8 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 text-gray-800 rounded shadow hover:shadow-md font-bold uppercase text-xs flex items-center gap-2 active:bg-gray-400 active:shadow-none transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
-                            </svg> Play/Resume
+                            </svg> {{ __('Play/Resume') }}
                         </button>
                         <button onclick="adminPause()"
                             class="px-8 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 text-gray-800 rounded shadow hover:shadow-md font-bold uppercase text-xs flex items-center gap-2 active:bg-gray-400 active:shadow-none transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                            </svg> Pause/Halt
+                            </svg> {{ __('Pause/Halt') }}
                         </button>
                     </div>
 
@@ -90,8 +87,7 @@
                         class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full bg-white p-3 border border-gray-300 rounded shadow-inner">
                         {{-- Seek --}}
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">Seek to
-                                (seconds)</label>
+                            <label class="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">{{ __('Seek to') }} ({{ __('seconds') }})</label>
                             <div class="flex items-center gap-1">
                                 <input type="number" id="seek-input" min="0" step="1" value="0"
                                     class="bg-white border border-gray-400 text-gray-800 rounded px-2 py-1 text-sm w-full focus:outline-none focus:border-orange-500 shadow-inner">
@@ -107,17 +103,14 @@
 
                         {{-- Loop Mode --}}
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">Loop
-                                Mode</label>
+                            <label class="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">{{ __('Loop Mode') }}</label>
                             <div class="relative">
                                 <select id="loop-select" onchange="adminLoop(this.value)"
                                     class="w-full bg-white border border-gray-400 text-gray-800 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-orange-500 shadow-inner appearance-none cursor-pointer">
-                                    <option value="none" {{ $state->loop_mode === 'none' ? 'selected' : '' }}>No Loop
+                                    <option value="none" {{ $state->loop_mode === 'none' ? 'selected' : '' }}>{{ __('No Loop') }}
                                     </option>
-                                    <option value="single" {{ $state->loop_mode === 'single' ? 'selected' : '' }}>Loop
-                                        Single Video</option>
-                                    <option value="playlist" {{ $state->loop_mode === 'playlist' ? 'selected' : '' }}>Loop
-                                        Entire Playlist</option>
+                                    <option value="single" {{ $state->loop_mode === 'single' ? 'selected' : '' }}>{{ __('Loop Single Video') }}</option>
+                                    <option value="playlist" {{ $state->loop_mode === 'playlist' ? 'selected' : '' }}>{{ __('Loop Entire Playlist') }}</option>
                                 </select>
                                 <svg class="w-4 h-4 absolute right-2 top-[6px] pointer-events-none text-gray-500"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,11 +134,11 @@
                             <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                             </svg>
-                            Network Queue
+                            {{ __('Network Queue') }}
                         </h2>
                         <span
                             class="bg-gray-100 border border-gray-300 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded shadow-inner">{{ $videos->count() }}
-                            media file(s)</span>
+                            {{ __('media file(s)') }}</span>
                     </div>
 
                     <div
@@ -155,10 +148,9 @@
                                 <svg class="w-8 h-8 text-gray-300 mb-2" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
                                 </svg>
-                                <p class="text-gray-400 text-xs mb-3 italic">Playlist empty.</p>
+                                <p class="text-gray-400 text-xs mb-3 italic">{{ __('Playlist empty.') }}</p>
                                 <a href="{{ route('admin.videos') }}"
-                                    class="px-4 py-1.5 bg-gray-100 border border-gray-300 hover:border-gray-400 text-gray-600 rounded text-xs font-bold shadow-sm transition-all hover:bg-gray-200">Load
-                                    Media...</a>
+                                    class="px-4 py-1.5 bg-gray-100 border border-gray-300 hover:border-gray-400 text-gray-600 rounded text-xs font-bold shadow-sm transition-all hover:bg-gray-200">{{ __('Load Media...') }}</a>
                             </div>
                         @else
                             @foreach ($videos as $video)
@@ -186,7 +178,7 @@
 
                                     <button onclick="adminChange({{ $video->id }})"
                                         class="shrink-0 opacity-0 group-hover:opacity-100 px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 text-[10px] font-bold uppercase rounded border border-gray-300 transition-all focus:opacity-100">
-                                        Cast
+                                        {{ __('Cast') }}
                                     </button>
                                 </div>
                             @endforeach
@@ -194,7 +186,7 @@
                     </div>
                     <!-- VLC mock bottom frame -->
                     <div class="h-4 bg-gray-200 border-t border-gray-300 flex items-center px-2">
-                        <span class="text-[9px] text-gray-500 uppercase font-mono">Status: Ready</span>
+                        <span class="text-[9px] text-gray-500 uppercase font-mono">{{ __('Status') }}: {{ __('Ready') }}</span>
                     </div>
                 </div>
             </div>
@@ -241,7 +233,7 @@
                 const flash = document.createElement('div');
                 flash.className =
                     'fixed left-1/2 top-10 -translate-x-1/2 bg-gray-900 text-white font-mono text-sm px-4 py-1 rounded shadow-xl pointer-events-none z-50 transition-opacity duration-300 opacity-90';
-                flash.innerHTML = '> Command sent';
+                flash.innerHTML = '> {{ __('Command sent') }}';
                 body.appendChild(flash);
                 setTimeout(() => {
                     flash.style.opacity = '0';

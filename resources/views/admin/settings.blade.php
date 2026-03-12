@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Settings')
+@section('title', __('Settings'))
 
 @section('content')
     <div class="animate-in fade-in duration-300 w-full max-w-4xl mx-auto space-y-4">
@@ -8,10 +8,8 @@
             class="flex flex-col md:flex-row justify-between items-center bg-[#f0f0f0] border border-gray-400 px-4 py-3 rounded shadow shadow-gray-400/20">
             <div>
                 <h1 class="text-lg font-bold text-gray-800 flex items-center gap-2 shadow-sm">
-                    <svg class="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L2 22H22L12 2Z" />
-                    </svg>
-                    Preferences
+                    <img src="{{ asset('favicon.svg') }}" class="w-5 h-5" alt="Logo">
+                    {{ __('Preferences') }}
                 </h1>
             </div>
         </div>
@@ -22,26 +20,26 @@
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M4 6h16v12H4z" />
                 </svg>
-                Screen Orientation
+                {{ __('Screen Orientation') }}
             </h2>
 
             <form action="{{ route('admin.settings.screen-orientation') }}" method="POST" class="space-y-3">
                 @csrf
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Display Mode</label>
+                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">{{ __('Display Mode') }}</label>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <select name="screen_orientation" class="flex-1 bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner">
-                            <option value="landscape" {{ $screenOrientation === 'landscape' ? 'selected' : '' }}>Landscape (0°)</option>
-                            <option value="portrait" {{ $screenOrientation === 'portrait' ? 'selected' : '' }}>Portrait (Rotated 90°)</option>
-                            <option value="portrait_180" {{ $screenOrientation === 'portrait_180' ? 'selected' : '' }}>Landscape Flipped (Rotated 180°)</option>
-                            <option value="portrait_270" {{ $screenOrientation === 'portrait_270' ? 'selected' : '' }}>Portrait (Rotated 270°)</option>
+                            <option value="landscape" {{ $screenOrientation === 'landscape' ? 'selected' : '' }}>{{ __('Landscape (0°)') }}</option>
+                            <option value="portrait" {{ $screenOrientation === 'portrait' ? 'selected' : '' }}>{{ __('Portrait (Rotated 90°)') }}</option>
+                            <option value="portrait_180" {{ $screenOrientation === 'portrait_180' ? 'selected' : '' }}>{{ __('Landscape Flipped (Rotated 180°)') }}</option>
+                            <option value="portrait_270" {{ $screenOrientation === 'portrait_270' ? 'selected' : '' }}>{{ __('Portrait (Rotated 270°)') }}</option>
                         </select>
                         <button type="submit"
                             class="shrink-0 px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex justify-center items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            Save
+                            {{ __('Save') }}
                         </button>
                     </div>
                     @error('screen_orientation')
@@ -59,25 +57,24 @@
                     <path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
                     </path>
                 </svg>
-                OSD Overlay (Ticker)
+                {{ __('OSD Overlay (Ticker)') }}
             </h2>
 
             <form action="{{ route('admin.settings.running-text') }}" method="POST" class="space-y-3">
                 @csrf
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Message
-                        String</label>
+                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">{{ __('Message String') }}</label>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <input type="text" name="text" value="{{ $runningText }}" required
                             class="flex-1 bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner @error('text') border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500 @enderror"
-                            placeholder="Enter the message to scroll across the OSD...">
+                            placeholder="{{ __('Enter the message to scroll across the OSD...') }}">
                         <button type="submit"
                             class="shrink-0 px-6 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-400 shadow text-gray-800 font-bold active:bg-gray-400 text-xs rounded uppercase tracking-wider transition-all flex justify-center items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                                 </path>
                             </svg>
-                            Save
+                            {{ __('Save') }}
                         </button>
                     </div>
                     @error('text')
@@ -96,25 +93,25 @@
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0V20a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z">
                     </path>
                 </svg>
-                Display Icon (Logo)
+                {{ __('Display Icon (Logo)') }}
             </h2>
 
             <div class="flex flex-col md:flex-row gap-6 relative z-10">
                 @if ($logoUrl)
                     <div class="shrink-0 w-full md:w-64">
                         <div class="flex items-center justify-between mb-2">
-                            <p class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider">Current Asset</p>
+                            <p class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider">{{ __('Current Asset') }}</p>
                             <form id="delete-logo-form" action="{{ route('admin.settings.logo.destroy') }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="Swal.fire({ title: 'Remove this logo?', text: 'This action cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Yes, remove it' }).then((result) => { if (result.isConfirmed) document.getElementById('delete-logo-form').submit(); })"
+                                <button type="button" onclick="Swal.fire({ title: '{{ __('Remove this logo?') }}', text: '{{ __('This action cannot be undone.') }}', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: '{{ __('Yes, remove it') }}', cancelButtonText: '{{ __('Cancel') }}' }).then((result) => { if (result.isConfirmed) document.getElementById('delete-logo-form').submit(); })"
                                     class="text-[10px] font-bold text-red-600 uppercase tracking-wider hover:text-red-700 transition-colors flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                         </path>
                                     </svg>
-                                    Remove
+                                    {{ __('Remove') }}
                                 </button>
                             </form>
                         </div>
@@ -130,8 +127,7 @@
                     class="flex-grow space-y-3 flex flex-col justify-end">
                     @csrf
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Upload
-                            Asset</label>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">{{ __('Upload Asset') }}</label>
                         <div class="relative w-full">
                             <input type="file" name="logo" accept=".png,.svg,.jpg,.jpeg" required id="logo-input"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
@@ -140,7 +136,7 @@
                                 <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                                 </svg>
-                                <span id="logo-label-text" class="font-bold">Select image file...</span>
+                                <span id="logo-label-text" class="font-bold">{{ __('Select image file...') }}</span>
                                 <span class="text-[10px] text-gray-500 font-mono">PNG, SVG, JPG</span>
                             </div>
                         </div>
@@ -155,7 +151,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                         </svg>
-                        Apply Asset
+                        {{ __('Apply Asset') }}
                     </button>
                 </form>
             </div>
@@ -168,7 +164,7 @@
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/>
                     </svg>
-                    Event Schedule Overlay
+                    {{ __('Event Schedule Overlay') }}
                 </span>
             </h2>
 
@@ -180,51 +176,51 @@
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" name="overlay_show" class="sr-only peer" {{ $overlayShow == '1' ? 'checked' : '' }}>
                         <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        <span class="ml-3 text-sm font-bold text-gray-700">Display Overlay on TV</span>
+                        <span class="ml-3 text-sm font-bold text-gray-700">{{ __('Display Overlay on TV') }}</span>
                     </label>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- Location --}}
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Building / Location</label>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">{{ __('Building / Location') }}</label>
                         <input type="text" name="overlay_location" value="{{ $overlayLocation }}"
                             class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner"
-                            placeholder="e.g. AULA SOEDIRMAN">
+                            placeholder="{{ __('e.g. AULA SOEDIRMAN') }}">
                     </div>
 
                     {{-- Subtitle --}}
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Subtitle</label>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">{{ __('Subtitle') }}</label>
                         <input type="text" name="overlay_subtitle" value="{{ $overlaySubtitle }}"
                             class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner"
-                            placeholder="e.g. ACARA BERIKUTNYA">
+                            placeholder="{{ __('e.g. ACARA BERIKUTNYA') }}">
                     </div>
                 </div>
 
                 {{-- Event Title --}}
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Main Event Title</label>
+                    <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">{{ __('Main Event Title') }}</label>
                     <input type="text" name="overlay_title" value="{{ $overlayTitle }}"
                         class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner font-bold"
-                        placeholder="e.g. SEMINAR KESELAMATAN PASIEN">
+                        placeholder="{{ __('e.g. SEMINAR KESELAMATAN PASIEN') }}">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- Time --}}
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Time Range</label>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">{{ __('Time Range') }}</label>
                         <input type="text" name="overlay_time" value="{{ $overlayTime }}"
                             class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner"
-                            placeholder="e.g. 08:00 - 12:00">
+                            placeholder="{{ __('e.g. 08:00 - 12:00') }}">
                     </div>
 
                     {{-- Organizer --}}
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">Organizer / PIC</label>
+                        <label class="block text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">{{ __('Organizer / PIC') }}</label>
                         <textarea name="overlay_organizer" rows="2"
                             class="w-full bg-white border border-gray-400 text-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-orange-500 shadow-inner resize-none"
-                            placeholder="e.g. BIDANG DIKLAT RSUD... PIC: Dr. Budi...">{{ $overlayOrganizer }}</textarea>
+                            placeholder="{{ __('e.g. BIDANG DIKLAT RSUD... PIC: Dr. Budi...') }}">{{ $overlayOrganizer }}</textarea>
                     </div>
                 </div>
 
@@ -234,7 +230,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        Save Overlay Details
+                        {{ __('Save Overlay Details') }}
                     </button>
                 </div>
             </form>

@@ -165,7 +165,7 @@
             @endif
 
             <video id="my-video" class="video-js vjs-big-play-centered" playsinline autoplay muted>
-                <p class="vjs-no-js">Please enable JavaScript to view this player.</p>
+                <p class="vjs-no-js">{{ __('Please enable JavaScript to view this player.') }}</p>
             </video>
         </div>
 

@@ -38,7 +38,7 @@ class EventScheduleController extends Controller
         $schedule->channels()->sync($channelIds);
 
         return redirect()->route('admin.event-schedules.index')
-            ->with('success', 'Event schedule created.');
+            ->with('success', __('Event schedule created.'));
     }
 
     public function edit(EventSchedule $eventSchedule): View
@@ -59,7 +59,7 @@ class EventScheduleController extends Controller
         $eventSchedule->channels()->sync($channelIds);
 
         return redirect()->route('admin.event-schedules.index')
-            ->with('success', 'Event schedule updated.');
+            ->with('success', __('Event schedule updated.'));
     }
 
     public function destroy(EventSchedule $eventSchedule): RedirectResponse
@@ -67,6 +67,6 @@ class EventScheduleController extends Controller
         $eventSchedule->delete();
 
         return redirect()->route('admin.event-schedules.index')
-            ->with('success', 'Event schedule deleted.');
+            ->with('success', __('Event schedule deleted.'));
     }
 }

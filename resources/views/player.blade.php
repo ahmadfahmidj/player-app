@@ -262,7 +262,7 @@
 </head>
 
 @php
-    $screenBaseAngle = match($screenOrientation) {
+    $screenBaseAngle = match ($screenOrientation) {
         'portrait' => 90,
         'portrait_180' => 180,
         'portrait_270' => 270,
@@ -275,20 +275,26 @@
     // 90°:  top-right corner, swapped vw/vh dimensions
     // 180°: bottom-right corner, full dimensions
     // 270°: bottom-left corner, swapped vw/vh dimensions
-    $screenStyle = match($totalAngle) {
-        90 => 'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg); transform: rotate(90deg); overflow: hidden;',
-        180 => 'position: absolute; top: 100%; left: 100%; width: 100%; height: 100%; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(180deg); transform: rotate(180deg); overflow: hidden;',
-        270 => 'position: absolute; top: 100%; left: 0; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(270deg); transform: rotate(270deg); overflow: hidden;',
-        default => 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden;',
+    $screenStyle = match ($totalAngle) {
+        90
+            => 'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg); transform: rotate(90deg); overflow: hidden;',
+        180
+            => 'position: absolute; top: 100%; left: 100%; width: 100%; height: 100%; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(180deg); transform: rotate(180deg); overflow: hidden;',
+        270
+            => 'position: absolute; top: 100%; left: 0; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(270deg); transform: rotate(270deg); overflow: hidden;',
+        default
+            => 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden;',
     };
 @endphp
+
 <body class="{{ in_array($totalAngle, [90, 270]) ? 'is-portrait' : '' }}">
-    <x-instruckt-toolbar />
+    {{-- <x-instruckt-toolbar /> --}}
 
     <!-- Un-rotated Video Container (Hardware Native) -->
-    <div id="video-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 5; overflow: hidden; background: #000;">
+    <div id="video-bg"
+        style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 5; overflow: hidden; background: #000;">
         <video id="my-video" class="video-js vjs-big-play-centered" playsinline>
-            <p class="vjs-no-js">Please enable JavaScript to view this player.</p>
+            <p class="vjs-no-js">{{ __('Please enable JavaScript to view this player.') }}</p>
         </video>
     </div>
 
@@ -324,7 +330,7 @@
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <div class="overlay-detail-content">
-                            <div class="overlay-detail-label">Waktu</div>
+                            <div class="overlay-detail-label">{{ __('Time') }}</div>
                             <div id="overlay-time" class="overlay-detail-value">{{ $overlay['time'] }}</div>
                         </div>
                     </div>
@@ -335,7 +341,7 @@
                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                         <div class="overlay-detail-content">
-                            <div class="overlay-detail-label">Penyelenggara</div>
+                            <div class="overlay-detail-label">{{ __('Organizer') }}</div>
                             <div id="overlay-organizer" class="overlay-detail-value text-base whitespace-pre-line">
                                 {{ $overlay['organizer'] }}</div>
                         </div>
@@ -388,7 +394,7 @@
 
         // Auto-refresh every 12 hours for TV signage (picks up playlist/settings updates)
         // Waits for the current video to finish before reloading to avoid mid-playback interruption.
-        (function () {
+        (function() {
             var REFRESH_INTERVAL = 12 * 60 * 60 * 1000; // 12 hours in ms
             var reloadPending = false;
 
@@ -402,7 +408,7 @@
                 var video = document.getElementById('my-video');
                 var fallback = setTimeout(doReload, 60000);
                 if (video) {
-                    var onVideoEnd = function () {
+                    var onVideoEnd = function() {
                         clearTimeout(fallback);
                         video.removeEventListener('ended', onVideoEnd);
                         video.removeEventListener('error', onVideoEnd);
