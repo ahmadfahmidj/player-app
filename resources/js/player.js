@@ -211,25 +211,26 @@ function handleVideoEnded() {
 }
 
 function updateTickerBadgeClock() {
-    const clock = document.getElementById('ticker-clock');
-    const badge = document.getElementById('ticker-badge');
-    const target = clock || badge;
-    if (!target) return;
+    const dateEl = document.getElementById('ticker-date');
+    const timeEl = document.getElementById('ticker-time');
+    if (!dateEl && !timeEl) return;
 
     const now = new Date();
-    const formatted = now.toLocaleDateString('id-ID', {
+    const dateStr = now.toLocaleDateString('id-ID', {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-    }) + ' \u00A0|\u00A0 ' + now.toLocaleTimeString('id-ID', {
+    });
+    const timeStr = now.toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
         hour12: false,
     });
 
-    target.textContent = formatted;
+    if (dateEl) dateEl.textContent = dateStr;
+    if (timeEl) timeEl.textContent = timeStr;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

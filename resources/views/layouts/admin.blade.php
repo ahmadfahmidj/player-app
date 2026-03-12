@@ -301,16 +301,7 @@
                         {{ __('Leave empty to auto-generate from name. Only lowercase letters, numbers, and hyphens.') }}
                     </p>
 
-                    <label
-                        class="block text-sm font-medium text-gray-700 mb-1">{{ __('Screen Rotation (Orientation)') }}</label>
-                    <select name="orientation"
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                        disabled>
-                        <option value="0">{{ __('0° (Normal)') }}</option>
-                        <option value="90">{{ __('90° (Clockwise)') }}</option>
-                        <option value="180">{{ __('180° (Upside Down)') }}</option>
-                        <option value="270">{{ __('270° (Counter-clockwise)') }}</option>
-                    </select>
+                    <input type="hidden" name="orientation" value="0">
                 </div>
                 <!-- optional: default videos? For now, just generate the channel -->
                 <div class="flex justify-end gap-2">

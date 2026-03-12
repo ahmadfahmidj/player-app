@@ -93,7 +93,7 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
             z-index: 35;
-            min-width: 180px;
+            min-width: 150px;
             border-right: 4px solid #38bdf8;
             border-top-right-radius: 1.5rem;
             border-bottom-right-radius: 1.5rem;
@@ -356,7 +356,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span id="ticker-clock"></span>
+                <span id="ticker-clock" style="display: flex; flex-direction: column; line-height: 1.3;">
+                    <span id="ticker-date"></span>
+                    <span id="ticker-time" style="font-size: 1.4em; letter-spacing: 0.08em;"></span>
+                </span>
             </div>
             <div id="ticker-bar">
                 <span id="ticker-text">{{ $runningText }}</span>
