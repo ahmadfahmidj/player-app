@@ -63,7 +63,7 @@ class SettingsController extends Controller
     public function updateScreenOrientation(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'screen_orientation' => 'required|in:landscape,portrait',
+            'screen_orientation' => 'required|in:landscape,portrait,portrait_180,portrait_270',
         ]);
 
         $activeChannel = \Illuminate\Support\Facades\View::shared('activeChannel');

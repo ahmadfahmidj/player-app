@@ -261,44 +261,29 @@
     </style>
 </head>
 
-<body class="{{ $screenOrientation == 'portrait' ? 'is-portrait' : '' }}">
+@php
+    $screenBaseAngle = match($screenOrientation) {
+        'portrait' => 90,
+        'portrait_180' => 180,
+        'portrait_270' => 270,
+        default => 0,
+    };
+
+    $totalAngle = ($screenBaseAngle + intval($channel->orientation ?? 0)) % 360;
+
+    // Each case positions the element so that rotate() from transform-origin: top left fills the screen.
+    // 90°:  top-right corner, swapped vw/vh dimensions
+    // 180°: bottom-right corner, full dimensions
+    // 270°: bottom-left corner, swapped vw/vh dimensions
+    $screenStyle = match($totalAngle) {
+        90 => 'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg); transform: rotate(90deg); overflow: hidden;',
+        180 => 'position: absolute; top: 100%; left: 100%; width: 100%; height: 100%; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(180deg); transform: rotate(180deg); overflow: hidden;',
+        270 => 'position: absolute; top: 100%; left: 0; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(270deg); transform: rotate(270deg); overflow: hidden;',
+        default => 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden;',
+    };
+@endphp
+<body class="{{ in_array($totalAngle, [90, 270]) ? 'is-portrait' : '' }}">
     <x-instruckt-toolbar />
-    @php
-        $rotStyle = '';
-        if ($channel->orientation == 90) {
-            $rotStyle =
-                '-webkit-transform: rotate(90deg); transform: rotate(90deg); -webkit-transform-origin: center; transform-origin: center;';
-        } elseif ($channel->orientation == 180) {
-            $rotStyle =
-                '-webkit-transform: rotate(180deg); transform: rotate(180deg); -webkit-transform-origin: center; transform-origin: center;';
-        } elseif ($channel->orientation == 270) {
-            $rotStyle =
-                '-webkit-transform: rotate(-90deg); transform: rotate(-90deg); -webkit-transform-origin: center; transform-origin: center;';
-        }
-
-        $screenStyle = '';
-        if ($screenOrientation == 'portrait') {
-            // Hardcode purely in style for legacy TVs with CSS variables fallback
-            $screenStyle =
-                'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg); transform: rotate(90deg); overflow: hidden;';
-        } else {
-            // Full landscape explicitly natively using percentages to avoid vw/vh bugs on ancient WebViews
-            $screenStyle =
-                'position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden;';
-        }
-
-        // Combine transforms safely if both exist
-        if ($screenOrientation == 'portrait' && $rotStyle != '') {
-            $screenStyle =
-                'position: absolute; top: 0; left: 100%; width: 100vh; height: 100vw; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transform: rotate(90deg) rotate(' .
-                $channel->orientation .
-                'deg); transform: rotate(90deg) rotate(' .
-                $channel->orientation .
-                'deg); overflow: hidden;';
-        } elseif ($screenOrientation != 'portrait' && $rotStyle != '') {
-            $screenStyle .= ' ' . $rotStyle;
-        }
-    @endphp
 
     <!-- Un-rotated Video Container (Hardware Native) -->
     <div id="video-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 5; overflow: hidden; background: #000;">
@@ -385,8 +370,9 @@
         // Bulletproof dynamic resizer to bypass old webview vw/vh engine bugs
         function resizeLegacyWrapper() {
             var wrap = document.getElementById('player-wrap');
-            var isPortrait = {{ $screenOrientation === 'portrait' ? 'true' : 'false' }};
-            if (isPortrait) {
+            var totalAngle = {{ $totalAngle }};
+            var isSwapped = totalAngle === 90 || totalAngle === 270;
+            if (isSwapped) {
                 wrap.style.width = window.innerHeight + 'px';
                 wrap.style.height = window.innerWidth + 'px';
             } else {
