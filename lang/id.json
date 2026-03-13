@@ -99,7 +99,7 @@
     "Video Player Library": "Perpustakaan Pemutar Video",
     "Media Library & Playlist": "Perpustakaan Media & Daftar Putar",
     "Your browser does not support the video tag.": "Browser Anda tidak mendukung tag video.",
-    "Mainan media player": "Pemutar Media Mainan",
+    "Media Player": "Pemutar Media",
     "No media selected": "Tidak ada media yang dipilih",
     "Playlist": "Daftar Putar",
     "items": "item",
@@ -265,5 +265,8 @@
     "Load Media...": "Muat Media...",
     "Cast": "Tayangkan",
     "Ready": "Siap",
-    "Command sent": "Perintah dikirim"
+    "Command sent": "Perintah dikirim",
+    "Storage": "Penyimpanan",
+    "used": "terpakai",
+    "free": "tersedia"
 }

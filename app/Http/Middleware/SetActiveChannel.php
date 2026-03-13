@@ -35,6 +35,19 @@ class SetActiveChannel
 
         \Illuminate\Support\Facades\View::share('activeChannel', $activeChannel);
 
+        $storagePath = storage_path('app');
+        $totalBytes = disk_total_space($storagePath);
+        $freeBytes = disk_free_space($storagePath);
+        $usedBytes = $totalBytes - $freeBytes;
+        $usedPercent = $totalBytes > 0 ? round(($usedBytes / $totalBytes) * 100) : 0;
+
+        \Illuminate\Support\Facades\View::share('storageInfo', [
+            'total' => $totalBytes,
+            'free' => $freeBytes,
+            'used' => $usedBytes,
+            'percent' => $usedPercent,
+        ]);
+
         return $next($request);
     }
 }

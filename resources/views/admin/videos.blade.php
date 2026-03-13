@@ -38,7 +38,7 @@
                                 class="w-24 h-24 text-orange-500/50 mb-2 drop-shadow-lg">
                                 <path d="M12 2L2 22H22L12 2Z" />
                             </svg>
-                            <span class="text-gray-400 font-bold text-xl block">{{ __('Mainan media player') }}</span>
+                            <span class="text-gray-400 font-bold text-xl block">{{ __('Media Player') }}</span>
                             <span class="text-gray-500 text-sm mt-1">{{ __('No media selected') }}</span>
                         </div>
                     @endif
@@ -52,7 +52,8 @@
                         <div id="ctrl-progress-bar"
                             class="flex-1 h-3 bg-gray-300 border border-gray-400 rounded-full group cursor-pointer relative shadow-inner flex items-center hover:bg-gray-400 transition-colors">
                             <div id="ctrl-progress-fill"
-                                class="absolute left-0 top-0 bottom-0 bg-orange-400 rounded-full opacity-70" style="width: 0%">
+                                class="absolute left-0 top-0 bottom-0 bg-orange-400 rounded-full opacity-70"
+                                style="width: 0%">
                             </div>
                             <div id="ctrl-progress-thumb"
                                 class="w-4 h-4 bg-gray-100 hover:bg-white border border-gray-500 rounded-full absolute shadow -ml-2 group-hover:scale-125 transition-transform"
@@ -99,10 +100,13 @@
                                     </svg></button>
                                 <div id="ctrl-volume-bar"
                                     class="w-20 h-1.5 bg-gray-300 border border-gray-400 rounded-full relative shadow-inner flex items-center cursor-pointer">
-                                    <div id="ctrl-volume-fill" class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded-full opacity-60" style="width: 70%">
+                                    <div id="ctrl-volume-fill"
+                                        class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded-full opacity-60"
+                                        style="width: 70%">
                                     </div>
                                     <div id="ctrl-volume-thumb"
-                                        class="w-3 h-3 bg-gray-100 border border-gray-500 rounded-full absolute shadow -ml-1.5" style="left: 70%">
+                                        class="w-3 h-3 bg-gray-100 border border-gray-500 rounded-full absolute shadow -ml-1.5"
+                                        style="left: 70%">
                                     </div>
                                 </div>
                             </div>
@@ -144,13 +148,15 @@
                                 data-id="{{ $video->id }}" data-type="playlist">
                                 <div class="flex items-center gap-2 min-w-0 flex-1 cursor-pointer"
                                     onclick="playVideo('{{ asset('storage/' . $video->path) }}', '{{ addslashes($video->title) }}', '{{ addslashes($video->filename) }}')">
-                                    <span class="text-xs text-gray-500 w-5 text-right font-mono shrink-0">{{ $index + 1 }}</span>
+                                    <span
+                                        class="text-xs text-gray-500 w-5 text-right font-mono shrink-0">{{ $index + 1 }}</span>
                                     <div class="truncate">
                                         <div class="text-xs font-bold text-gray-800 truncate">{{ $video->title }}</div>
                                         <div class="text-[10px] text-gray-500 truncate">{{ $video->filename }}</div>
                                     </div>
                                 </div>
-                                <span class="text-xs text-gray-500 font-mono shrink-0">{{ $video->formatted_duration }}</span>
+                                <span
+                                    class="text-xs text-gray-500 font-mono shrink-0">{{ $video->formatted_duration }}</span>
                                 <div class="flex items-center gap-0.5 shrink-0">
                                     <flux:button
                                         onclick="playVideo('{{ asset('storage/' . $video->path) }}', '{{ addslashes($video->title) }}', '{{ addslashes($video->filename) }}')"
@@ -163,7 +169,8 @@
                                         class="m-0">
                                         @csrf
                                         @method('DELETE')
-                                        <flux:button type="submit" variant="subtle" size="xs" square icon="trash" aria-label="Delete" />
+                                        <flux:button type="submit" variant="subtle" size="xs" square
+                                            icon="trash" aria-label="Delete" />
                                     </form>
                                 </div>
                             </div>
@@ -200,15 +207,15 @@
                             </div>
                             <span class="text-xs text-gray-400 font-mono shrink-0">{{ $v->formatted_duration }}</span>
                             <div class="flex items-center gap-0.5 shrink-0">
-                                <flux:button
-                                    onclick="openEditModal({{ $v->id }}, '{{ addslashes($v->title) }}')"
+                                <flux:button onclick="openEditModal({{ $v->id }}, '{{ addslashes($v->title) }}')"
                                     variant="subtle" size="xs" square icon="pencil-square" aria-label="Edit" />
                                 <form action="{{ route('admin.videos.force-destroy', $v) }}" method="POST"
                                     onsubmit="event.preventDefault(); Swal.fire({ title: '{{ __('Permanently delete') }} {{ addslashes($v->title) }}?', text: '{{ __('This will remove the video file and database record. This cannot be undone.') }}', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: '{{ __('Yes, delete permanently!') }}' }).then((result) => { if (result.isConfirmed) this.submit(); });"
                                     class="m-0">
                                     @csrf
                                     @method('DELETE')
-                                    <flux:button type="submit" variant="subtle" size="xs" square icon="trash" aria-label="Delete" />
+                                    <flux:button type="submit" variant="subtle" size="xs" square icon="trash"
+                                        aria-label="Delete" />
                                 </form>
                             </div>
                         </div>
@@ -264,7 +271,8 @@
                         <div class="flex items-center gap-2 mt-2 pt-1">
                             <input type="checkbox" id="rotate-portrait" name="rotate" value="1"
                                 class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
-                            <label for="rotate-portrait" class="text-[10px] font-bold text-gray-800">{{ __('Rotate Video 90° for Portrait TV') }}</label>
+                            <label for="rotate-portrait"
+                                class="text-[10px] font-bold text-gray-800">{{ __('Rotate Video 90° for Portrait TV') }}</label>
                         </div>
 
                         <div class="pt-1">
@@ -285,27 +293,31 @@
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
                     <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                     </svg>
                     {{ __('Edit Video') }}
                 </h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                     </svg>
                 </button>
             </div>
             <form id="edit-modal-form" onsubmit="saveVideo(event)" class="p-4 space-y-4">
                 <input type="hidden" id="edit-video-id">
                 <div>
-                    <label for="edit-title" class="block text-xs font-bold text-gray-700 uppercase mb-1">{{ __('Title') }}</label>
+                    <label for="edit-title"
+                        class="block text-xs font-bold text-gray-700 uppercase mb-1">{{ __('Title') }}</label>
                     <input type="text" id="edit-title" name="title" required
                         class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                 </div>
                 <div class="flex items-center gap-2">
                     <input type="checkbox" id="edit-rotate" name="rotate" value="1"
                         class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
-                    <label for="edit-rotate" class="text-xs font-bold text-gray-700">{{ __('Rotate Video 90° for Portrait TV') }}</label>
+                    <label for="edit-rotate"
+                        class="text-xs font-bold text-gray-700">{{ __('Rotate Video 90° for Portrait TV') }}</label>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
                     <button type="button" onclick="closeEditModal()"
@@ -403,9 +415,9 @@
             }
 
             function updatePlayIcon() {
-                const path = player.paused
-                    ? 'M8 5v14l11-7z'
-                    : 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+                const path = player.paused ?
+                    'M8 5v14l11-7z' :
+                    'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
                 playIcon.innerHTML = '<path d="' + path + '" />';
             }
 
@@ -591,25 +603,28 @@
             submitBtn.disabled = true;
 
             fetch(`/admin/videos/${videoId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                },
-                body: JSON.stringify({ title, rotate })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                submitBtn.textContent = 'Save';
-                submitBtn.disabled = false;
-            });
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                    },
+                    body: JSON.stringify({
+                        title,
+                        rotate
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    submitBtn.textContent = 'Save';
+                    submitBtn.disabled = false;
+                });
         }
 
         // Close modal on backdrop click
@@ -673,7 +688,7 @@
                             if (dragging !== item) playlist.insertBefore(dragging, item);
                         } else {
                             if (dragging !== item.nextSibling) playlist.insertBefore(dragging, item
-                            .nextSibling);
+                                .nextSibling);
                         }
                     }
                 });
