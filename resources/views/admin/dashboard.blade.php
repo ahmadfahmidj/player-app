@@ -22,12 +22,36 @@
                 {{-- Current Status Board --}}
                 <div class="bg-gray-100 border border-gray-400 p-4 shadow-md rounded">
                     <h2
-                        class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-gray-300 pb-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                        {{ __('Connection Status') }}
+                        class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 flex items-center justify-between border-b border-gray-300 pb-2">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            {{ __('Connection Status') }}
+                        </div>
+                        <span class="bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full text-[10px] truncate max-w-[150px]" title="{{ $activeChannel->name ?? __('Unknown Channel') }}">
+                            {{ $activeChannel->name ?? __('Unknown Channel') }}
+                        </span>
                     </h2>
+
+                    <div class="mb-4 aspect-video bg-black rounded border border-gray-400 overflow-hidden shadow-inner relative w-full" id="player-preview-container">
+                        <iframe id="player-preview-iframe" src="{{ isset($activeChannel) ? route('player.channel', ['slug' => $activeChannel->slug]) : route('player') }}" class="absolute top-0 left-0 pointer-events-none origin-top-left" style="width: 1920px; height: 1080px;" frameborder="0"></iframe>
+                    </div>
+                    <script>
+                        function resizePreviewIframe() {
+                            const container = document.getElementById('player-preview-container');
+                            const iframe = document.getElementById('player-preview-iframe');
+                            if (container && iframe) {
+                                const scale = container.clientWidth / 1920;
+                                iframe.style.transform = `scale(${scale})`;
+                            }
+                        }
+                        window.addEventListener('resize', resizePreviewIframe);
+                        // Run immediately and after a short delay to ensure layout is complete
+                        resizePreviewIframe();
+                        setTimeout(resizePreviewIframe, 100);
+                        setTimeout(resizePreviewIframe, 500);
+                    </script>
 
                     <div class="flex items-center gap-4 bg-white rounded border border-gray-300 shadow-inner p-3">
                         <div class="relative flex h-5 w-5">

@@ -181,12 +181,13 @@
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     {{ __('View') }}</span>
-                <span class="text-xs text-gray-400 cursor-not-allowed px-2 py-1.5 rounded flex items-center gap-1.5">
+                <button type="button" onclick="document.getElementById('helpModal').classList.remove('hidden')"
+                    class="text-xs text-gray-800 cursor-pointer hover:bg-gray-300 px-2 py-1.5 rounded flex items-center gap-1.5 w-full text-left">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {{ __('Help') }}</span>
+                    {{ __('Help') }}</button>
             </nav>
         </aside>
 
@@ -312,6 +313,117 @@
                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">{{ __('Create') }}</button>
                 </div>
             </form>
+        </div>
+    </div>
+    <!-- Help Modal -->
+    <div id="helpModal"
+        class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-extrabold text-gray-800 mb-6 border-b pb-2">{{ __('Panduan Penggunaan Aplikasi (Digital Signage / TV Information)') }}</h3>
+            
+            <div class="space-y-6 text-sm text-gray-700">
+                
+                <!-- 1. Konsep Dasar -->
+                <div>
+                    <h4 class="font-bold text-lg text-orange-600 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {{ __('1. Konsep Dasar') }}
+                    </h4>
+                    <div class="pl-7 space-y-2">
+                        <p>{{ __('Aplikasi ini berfungsi sebagai sistem kontrol terpusat untuk menampilkan informasi (video, gambar, teks berjalan, jadwal) ke satu atau lebih layar TV.') }}</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Admin Panel:</strong> {{ __('Layar ini tempat Anda mengatur semua konten.') }}</li>
+                            <li><strong>Player Screen:</strong> {{ __('Layar hasil akhir yang ditampilkan di TV. Biarkan layar ini terbuka di browser TV / Smart TV Anda.') }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 2. Mengelola Saluran -->
+                <div>
+                    <h4 class="font-bold text-lg text-orange-600 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        {{ __('2. Mengelola Saluran (Channel)') }}
+                    </h4>
+                    <div class="pl-7 space-y-2">
+                        <p>{{ __('Setiap "Channel" mewakili satu TV atau lokasi (misal: "Ruang Tunggu A", "Lobi Utama"). Konten di setiap channel terpisah dan tidak saling mengganggu.') }}</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Memilih Channel:</strong> {{ __('Gunakan dropdown di bagian atas layar Admin untuk berpindah ruang kerja antar channel.') }}</li>
+                            <li><strong>Membuat Channel Baru:</strong> {{ __('Klik tombol "New" di samping dropdown. Masukkan nama channel (contoh: Poli Gigi).') }}</li>
+                            <li><strong>Membuka TV:</strong> {{ __('Klik tombol "Player Screen" di kanan atas. Ini akan membuka tab baru sesuai channel yang sedang aktif. Hubungkan tab tersebut ke layar TV yang dituju.') }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. Perpustakaan Media (Video) -->
+                <div>
+                    <h4 class="font-bold text-lg text-orange-600 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        {{ __('3. Mengatur Video (Media Library)') }}
+                    </h4>
+                    <div class="pl-7 space-y-2">
+                        <p>{{ __('Menu ini adalah pusat pengaturan video yang akan berputar di Player.') }}</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Unggah Video:</strong> {{ __('Klik tombol "Upload New" untuk menambahkan video (.mp4) ke sistem.') }}</li>
+                            <li><strong>Memutar Video:</strong> {{ __('Video yang baru diunggah hanya tersimpan di perpustakaan. Untuk memutarnya di TV, seret (drag) video dari "Library" (kiri) ke dalam kotak "Playlist" (kanan).') }}</li>
+                            <li><strong>Mengatur Urutan:</strong> {{ __('Seret video di dalam "Playlist" ke atas atau ke bawah untuk mengatur urutan putarnya.') }}</li>
+                            <li><strong>Menghapus Video dari Playlist:</strong> {{ __('Klik tombol merah (Remove) pada video di Playlist.') }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 4. Slide Gambar -->
+                <div>
+                    <h4 class="font-bold text-lg text-orange-600 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        {{ __('4. Slide Gambar (Image Slides)') }}
+                    </h4>
+                    <div class="pl-7 space-y-2">
+                        <p>{{ __('Digunakan untuk menampilkan gambar promosi, poster, atau pengumuman visual secara bergantian.') }}</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Upload Gambar:</strong> {{ __('Klik "Upload New Slide". Anda dapat mengatur durasi berapa detik gambar tersebut akan tampil di layar.') }}</li>
+                            <li><strong>Penempatan:</strong> {{ __('Gambar akan muncul di layar Player sebagai latar belakang (jika tidak ada video) atau mengisi ruang kosong di layar sesuai layout yang aktif.') }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 5. Jadwal Acara / Pengumuman -->
+                <div>
+                    <h4 class="font-bold text-lg text-orange-600 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        {{ __('5. Jadwal Acara (Event Schedules)') }}
+                    </h4>
+                    <div class="pl-7 space-y-2">
+                        <p>{{ __('Menu ini digunakan untuk menampilkan daftar agenda atau informasi statis di samping layar Player.') }}</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>{{ __('Sangat berguna untuk klinik (menampilkan daftar dokter jaga hari ini) atau ruang rapat (menampilkan jadwal meeting).') }}</li>
+                            <li>{{ __('Gunakan tombol "New Schedule" untuk menambahkan teks baru, atur posisinya dengan menyeret ke atas/bawah, lalu aktifkan toggle (switch) agar tampil di TV.') }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 6. Alat & Preferensi -->
+                <div>
+                    <h4 class="font-bold text-lg text-orange-600 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        {{ __('6. Alat & Preferensi (Tools/Prefs)') }}
+                    </h4>
+                    <div class="pl-7 space-y-2">
+                        <p>{{ __('Pengaturan tampilan utama untuk TV Anda.') }}</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Running Text:</strong> {{ __('Ubah teks yang berjalan di bagian bawah TV.') }}</li>
+                            <li><strong>Logo & Branding:</strong> {{ __('Unggah logo perusahaan/instansi agar tampil di sudut TV.') }}</li>
+                            <li><strong>Refresh TV (Tombol di Atas):</strong> {{ __('Jika TV terasa macet atau tidak sinkron, klik tombol "Refresh TV" di menu atas untuk memaksa TV me-reload secara otomatis.') }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex justify-end gap-2 mt-8 pt-4 border-t border-gray-200">
+                <button type="button"
+                    onclick="document.getElementById('helpModal').classList.add('hidden')"
+                    class="px-6 py-2.5 text-sm font-bold text-white bg-orange-600 rounded-md shadow hover:bg-orange-700 transition-colors">{{ __('Tutup Panduan') }}</button>
+            </div>
         </div>
     </div>
 </body>
