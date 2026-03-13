@@ -45,8 +45,10 @@ class ProcessVideoRotation implements ShouldQueue
 
         // -vf "transpose=1" rotates 90 degrees clockwise
         // -c:a copy retains the original audio verbatim
+        // -preset ultrafast prioritizes speed over compression
+        // -threads 0 lets FFmpeg use all available CPU cores
         $cmd = sprintf(
-            'ffmpeg -y -i %s -vf "transpose=1" -c:a copy -c:v libx264 -preset fast -crf 23 %s 2>&1',
+            'ffmpeg -y -i %s -vf "transpose=1" -c:a copy -c:v libx264 -preset ultrafast -crf 23 -threads 0 %s 2>&1',
             escapeshellarg($fullOriginalPath),
             escapeshellarg($fullTempPath)
         );

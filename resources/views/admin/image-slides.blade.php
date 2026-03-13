@@ -187,11 +187,11 @@
                             <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
                         @enderror
 
-                        <div class="flex items-center gap-2">
+                        {{-- <div class="flex items-center gap-2">
                             <input type="checkbox" id="rotate-upload" name="rotate" value="1"
                                 class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
                             <label for="rotate-upload" class="text-[10px] font-bold text-gray-800">{{ __('Rotate Image 90° clockwise') }}</label>
-                        </div>
+                        </div> --}}
 
                         <div class="pt-1">
                             <button type="submit"
@@ -233,11 +233,11 @@
                     <input type="number" id="edit-duration" name="duration" min="1" max="300" required
                         class="w-full text-xs px-3 py-2 border border-gray-400 shadow-inner rounded focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white">
                 </div>
-                <div class="flex items-center gap-2">
+                {{-- <div class="flex items-center gap-2">
                     <input type="checkbox" id="edit-rotate" name="rotate" value="1"
                         class="rounded border-gray-400 text-orange-600 focus:ring-orange-500">
                     <label for="edit-rotate" class="text-xs font-bold text-gray-700">{{ __('Rotate Image 90° clockwise') }}</label>
-                </div>
+                </div> --}}
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
                     <button type="button" onclick="closeEditModal()"
                         class="px-4 py-2 text-xs font-bold uppercase bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded text-gray-700 transition-colors">{{ __('Cancel') }}</button>
@@ -279,7 +279,6 @@
             document.getElementById('edit-slide-id').value = slideId;
             document.getElementById('edit-title').value = currentTitle;
             document.getElementById('edit-duration').value = currentDuration;
-            document.getElementById('edit-rotate').checked = false;
             const modal = document.getElementById('edit-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -297,7 +296,6 @@
             const slideId = document.getElementById('edit-slide-id').value;
             const title = document.getElementById('edit-title').value.trim();
             const duration = parseInt(document.getElementById('edit-duration').value, 10);
-            const rotate = document.getElementById('edit-rotate').checked;
             const submitBtn = document.getElementById('edit-submit-btn');
 
             submitBtn.textContent = '{{ __('Saving...') }}';
@@ -310,7 +308,7 @@
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                 },
-                body: JSON.stringify({ title, duration, rotate })
+                body: JSON.stringify({ title, duration })
             })
             .then(r => r.json())
             .then(data => {
