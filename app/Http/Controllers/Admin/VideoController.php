@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessVideoOptimization;
 use App\Jobs\ProcessVideoRotation;
 use App\Models\Video;
 use Illuminate\Http\RedirectResponse;
@@ -72,13 +73,12 @@ class VideoController extends Controller
             'filename' => $filename,
             'path' => 'videos/'.$filename,
             'duration' => $duration,
+            'is_optimized' => false,
         ]);
 
         $activeChannel->videos()->attach($video->id, ['order' => $maxOrder + 1]);
 
-        if ($request->boolean('rotate')) {
-            ProcessVideoRotation::dispatch($video);
-        }
+        ProcessVideoOptimization::dispatch($video, $request->boolean('rotate'));
 
         return redirect()->route('admin.videos')->with('success', __('Video uploaded and added to playlist.'));
     }

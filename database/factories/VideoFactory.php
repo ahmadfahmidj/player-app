@@ -23,6 +23,7 @@ class VideoFactory extends Factory
             'filename' => $filename,
             'path' => 'videos/'.$filename,
             'duration' => fake()->numberBetween(30, 3600),
+            'is_optimized' => true,
         ];
     }
 }

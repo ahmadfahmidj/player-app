@@ -152,7 +152,12 @@
                                         class="text-xs text-gray-500 w-5 text-right font-mono shrink-0">{{ $index + 1 }}</span>
                                     <div class="truncate">
                                         <div class="text-xs font-bold text-gray-800 truncate">{{ $video->title }}</div>
-                                        <div class="text-[10px] text-gray-500 truncate">{{ $video->filename }}</div>
+                                        <div class="text-[10px] text-gray-500 truncate flex items-center gap-1">
+                                            <span class="truncate">{{ $video->filename }}</span>
+                                            @unless ($video->is_optimized)
+                                                <span class="shrink-0 text-[9px] font-semibold px-1 py-0.5 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded">{{ __('Processing...') }}</span>
+                                            @endunless
+                                        </div>
                                     </div>
                                 </div>
                                 <span
@@ -202,7 +207,12 @@
                             <div class="flex items-center gap-2 min-w-0 flex-1">
                                 <div class="truncate">
                                     <div class="text-xs font-bold text-gray-700 truncate">{{ $v->title }}</div>
-                                    <div class="text-[10px] text-gray-400 truncate">{{ $v->filename }}</div>
+                                    <div class="text-[10px] text-gray-400 truncate flex items-center gap-1">
+                                        <span class="truncate">{{ $v->filename }}</span>
+                                        @unless ($v->is_optimized)
+                                            <span class="shrink-0 text-[9px] font-semibold px-1 py-0.5 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded">{{ __('Processing...') }}</span>
+                                        @endunless
+                                    </div>
                                 </div>
                             </div>
                             <span class="text-xs text-gray-400 font-mono shrink-0">{{ $v->formatted_duration }}</span>

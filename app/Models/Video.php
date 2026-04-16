@@ -9,12 +9,13 @@ class Video extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'filename', 'path', 'duration'];
+    protected $fillable = ['title', 'filename', 'path', 'duration', 'is_optimized'];
 
     protected function casts(): array
     {
         return [
             'duration' => 'integer',
+            'is_optimized' => 'boolean',
         ];
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ProcessVideoOptimization;
 use App\Jobs\ProcessVideoRotation;
 use App\Models\Channel;
 use App\Models\User;
@@ -118,6 +119,59 @@ test('video update without rotate does not dispatch rotation job', function () {
     $response->assertSuccessful();
 
     Queue::assertNotPushed(ProcessVideoRotation::class);
+});
+
+test('video upload dispatches optimization job without rotate', function () {
+    Queue::fake();
+
+    $this->actingAs($this->user);
+
+    $file = UploadedFile::fake()->create('test-video.mp4', 1024, 'video/mp4');
+
+    $this->post(route('admin.videos.store'), [
+        'title' => 'Test Video',
+        'video' => $file,
+    ]);
+
+    Queue::assertPushed(ProcessVideoOptimization::class, function ($job) {
+        return $job->rotate === false;
+    });
+
+    Queue::assertNotPushed(ProcessVideoRotation::class);
+});
+
+test('video upload with rotate dispatches optimization job with rotate true', function () {
+    Queue::fake();
+
+    $this->actingAs($this->user);
+
+    $file = UploadedFile::fake()->create('portrait-video.mp4', 1024, 'video/mp4');
+
+    $this->post(route('admin.videos.store'), [
+        'title' => 'Portrait Video',
+        'video' => $file,
+        'rotate' => '1',
+    ]);
+
+    Queue::assertPushed(ProcessVideoOptimization::class, function ($job) {
+        return $job->rotate === true;
+    });
+});
+
+test('newly uploaded video has is_optimized false in database', function () {
+    $this->actingAs($this->user);
+
+    $file = UploadedFile::fake()->create('new-video.mp4', 1024, 'video/mp4');
+
+    $this->post(route('admin.videos.store'), [
+        'title' => 'New Video',
+        'video' => $file,
+    ]);
+
+    $this->assertDatabaseHas('videos', [
+        'title' => 'New Video',
+        'is_optimized' => false,
+    ]);
 });
 
 test('video formatted duration displays correctly', function () {
